@@ -1,0 +1,49 @@
+.tourism-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 columns for tourism on the right */
+  gap: 15px;
+}
+
+.tourism-card {
+  background-color: var(--white);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.tourism-img {
+  height: 100px;
+}
+
+.tourism-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tourism-info {
+  padding: 10px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.tourism-info h4 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  line-height: 1.3;
+}
+
+.tourism-rating {
+  font-size: 12px;
+}
+
+@media (max-width: 1300px) {
+  .tourism-grid {
+    grid-template-columns: 1fr;
+  }
+}

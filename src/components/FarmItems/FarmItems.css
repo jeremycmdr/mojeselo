@@ -1,0 +1,53 @@
+.farm-items-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.farm-item-card {
+  background-color: var(--white);
+  border-radius: 6px;
+  padding: 15px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.farm-item-name {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  min-height: 32px;
+}
+
+.farm-item-price {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.farm-item-btn {
+  width: 100%;
+  padding: 8px 0;
+  font-size: 12px;
+  border-radius: 4px;
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 1px solid var(--primary-green);
+  color: var(--primary-green);
+}
+
+.btn-outline:hover {
+  background-color: var(--primary-green);
+  color: var(--white);
+}
+
+@media (max-width: 1300px) {
+  .farm-items-grid {
+    grid-template-columns: 1fr;
+  }
+}

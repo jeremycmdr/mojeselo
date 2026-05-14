@@ -1,0 +1,22 @@
+.reliability-section {
+  padding: 40px 60px;
+  background-color: #f7f5ef; /* slight tint for the text area */
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+  margin-top: auto;
+}
+
+.reliability-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: var(--text-primary);
+}
+
+.reliability-text {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 800px;
+  margin: 0 auto;
+}
