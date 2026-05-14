@@ -1,12 +1,66 @@
-/* Blank index.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg-color: #fcfbfa; /* Slightly textured look via color, or we can use background pattern */
+  --bg-secondary: #f4f1e5; /* The beige background used in right sidebar and sections */
+  --text-primary: #2d2d2d;
+  --text-secondary: #666;
+  --primary-green: #52753a;
+  --primary-green-hover: #405c2e;
+  --footer-bg: #3a3832;
+  --footer-text: #c0beb8;
+  --border-color: #e2decb;
+  --star-color: #e5a939;
+  --white: #ffffff;
+}
+
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 body {
-  width: 100vw;
-  height: 100vh;
-  background-color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.text-green {
+  color: var(--primary-green);
+}
+
+.btn-primary {
+  background-color: var(--primary-green);
+  color: var(--white);
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-green-hover);
 }
