@@ -83,6 +83,11 @@
 }
 
 @media (max-width: 768px) {
+  .hero-section {
+    height: auto;
+    min-height: 400px;
+    padding: 60px 20px;
+  }
   .search-widget {
     flex-direction: column;
     padding: 15px;
