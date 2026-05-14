@@ -1,7 +1,7 @@
 .hero-section {
   position: relative;
   height: 400px;
-  background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1596704179374-12dbdc3298ec?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80');
+  background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('/hero_background.png');
   background-size: cover;
   background-position: center;
   display: flex;
@@ -95,5 +95,34 @@
   }
   .search-widget .search-btn {
     width: 100%;
+  }
+}
+
+@media (max-width: 400px) {
+  .hero-section {
+    height: auto;
+    min-height: 320px;
+    padding: 40px 15px;
+  }
+  .hero-content h1 {
+    font-size: 22px;
+    line-height: 1.2;
+  }
+  .hero-content p {
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+  .search-widget {
+    padding: 12px;
+    gap: 10px;
+  }
+  .search-field {
+    padding: 0 5px;
+  }
+  .search-field label {
+    font-size: 11px;
+  }
+  .search-field input {
+    font-size: 13px;
   }
 }

@@ -29,12 +29,20 @@
   gap: 30px;
 }
 
-.products-area {
-  flex: 1;
+.mobile-categories {
+  display: none;
 }
 
-.news-area {
-  flex: 0 0 250px;
+.desktop-categories {
+  display: block;
+}
+
+.mobile-tourism {
+  display: none;
+}
+
+.desktop-tourism {
+  display: block;
 }
 
 /* Responsive design */
@@ -50,13 +58,38 @@
     border-left: none;
     border-top: 1px solid var(--border-color);
   }
+  .mobile-categories {
+    display: block;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .desktop-categories {
+    display: none;
+  }
+  .mobile-tourism {
+    display: block;
+    padding: 30px;
+    background-color: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+  }
+  .desktop-tourism {
+    display: none;
+  }
 }
 
 @media (max-width: 768px) {
   .left-middle-section {
     flex-direction: column;
   }
-  .news-area {
-    flex: 1 1 auto;
+}
+
+@media (max-width: 400px) {
+  .left-middle-section {
+    padding: 15px;
+    gap: 20px;
+  }
+  .right-column {
+    padding: 20px;
   }
 }

@@ -16,15 +16,15 @@ const Header = () => {
             <li><a href="#">Domaćinstva</a></li>
             <li><a href="#">Seoski Turizam</a></li>
             <li><a href="#">Sve Organsko</a></li>
-            <li><a href="#">Alati i Oprema</a></li>
             <li><a href="#">O Nama</a></li>
           </ul>
         </nav>
         
         <div className="header-actions">
-          <button className="icon-btn search-btn">🔍</button>
-          <button className="icon-btn cart-btn">🛒</button>
-          <button className="login-btn">Prijavi Domaćinstvo / Prijava</button>
+          <button className="login-btn">
+            <span className="full-text">Prijavi Domaćinstvo / Prijava</span>
+            <span className="short-text">Prijava</span>
+          </button>
         </div>
       </div>
     </header>

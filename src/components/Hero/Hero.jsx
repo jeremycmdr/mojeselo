@@ -5,9 +5,9 @@ const Hero = () => {
   return (
     <section className="hero-section">
       <div className="hero-content">
-        <h1>OKUSI PRAVU BOSNU I HERCEGOVINU.</h1>
+        <h1>OKUSI PRAVU BOSNU I HERCEGOVINU</h1>
         <p>Direktna veza sa najboljim seoskim domaćinstvima. Kupujte zdravo, putujte autentično.</p>
-        
+
         <div className="search-widget">
           <div className="search-field">
             <label>Šta tražite?</label>

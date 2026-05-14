@@ -49,3 +49,18 @@
   font-weight: 600;
   line-height: 1.2;
 }
+@media (max-width: 400px) {
+  .categories-grid {
+    gap: 10px;
+  }
+  .category-item {
+    width: 70px;
+  }
+  .category-img-wrapper {
+    width: 60px;
+    height: 60px;
+  }
+  .category-name {
+    font-size: 11px;
+  }
+}

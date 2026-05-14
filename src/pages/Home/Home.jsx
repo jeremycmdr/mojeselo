@@ -3,11 +3,9 @@ import './Home.css';
 import Header from '../../components/Header/Header';
 import Hero from '../../components/Hero/Hero';
 import ProductsList from '../../components/Products/ProductsList';
-import NewsWidget from '../../components/News/NewsWidget';
 import ReliabilityText from '../../components/Reliability/ReliabilityText';
 import CategoryList from '../../components/Categories/CategoryList';
 import TourismList from '../../components/Tourism/TourismList';
-import FarmItemsList from '../../components/FarmItems/FarmItemsList';
 import Footer from '../../components/Footer/Footer';
 
 const Home = () => {
@@ -19,22 +17,28 @@ const Home = () => {
         <div className="left-column">
           <Hero />
           
+          <div className="mobile-categories">
+            <CategoryList />
+          </div>
+
           <div className="left-middle-section">
-            <div className="products-area">
-              <ProductsList />
-            </div>
-            <div className="news-area">
-              <NewsWidget />
-            </div>
+            <ProductsList />
+          </div>
+
+          <div className="mobile-tourism">
+            <TourismList />
           </div>
           
           <ReliabilityText />
         </div>
         
         <aside className="right-column">
-          <CategoryList />
-          <TourismList />
-          <FarmItemsList />
+          <div className="desktop-categories">
+            <CategoryList />
+          </div>
+          <div className="desktop-tourism">
+            <TourismList />
+          </div>
         </aside>
       </main>
 

@@ -81,21 +81,23 @@
   gap: 15px;
 }
 
-.social-icons span {
-  width: 32px;
-  height: 32px;
+.social-icons a {
+  width: 36px;
+  height: 36px;
   border: 1px solid var(--footer-text);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
-  transition: all 0.2s;
+  color: var(--footer-text);
+  transition: all 0.3s ease;
 }
 
-.social-icons a:hover span {
+.social-icons a:hover {
   border-color: var(--white);
   color: var(--white);
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-3px);
 }
 
 .footer-links {
@@ -108,12 +110,6 @@
   color: var(--white);
 }
 
-.payment-icons {
-  display: flex;
-  gap: 10px;
-  font-size: 12px;
-  font-weight: bold;
-}
 
 .footer-copyright {
   text-align: center;
