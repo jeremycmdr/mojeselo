@@ -414,6 +414,7 @@
   transition: right 0.3s ease-in-out, visibility 0s 0.3s;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
   visibility: hidden;
 }
 
@@ -450,9 +451,9 @@
 
 .mobile-nav-footer {
   margin-top: auto;
-  padding-bottom: 90px;
+  padding-bottom: 80px;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
-  padding-top: 20px;
+  padding-top: 30px;
 }
 
 .login-btn-mobile {
@@ -498,5 +499,6 @@
   opacity: 1;
   visibility: visible;
   transition: opacity 0.3s ease, visibility 0s;
+  touch-action: none;
 }
 

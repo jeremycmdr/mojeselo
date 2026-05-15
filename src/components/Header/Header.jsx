@@ -41,6 +41,21 @@ const Header = ({ onOpenAuth }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    if (isMobileMenuOpen || isAddModalOpen) {
+      document.body.classList.add('menu-open');
+      document.documentElement.classList.add('menu-open');
+    } else {
+      document.body.classList.remove('menu-open');
+      document.documentElement.classList.remove('menu-open');
+    }
+    
+    return () => {
+      document.body.classList.remove('menu-open');
+      document.documentElement.classList.remove('menu-open');
+    };
+  }, [isMobileMenuOpen, isAddModalOpen]);
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');

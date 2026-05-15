@@ -36,6 +36,13 @@ body {
   width: 100%;
 }
 
+/* Prevent scrolling when mobile menu is open */
+html.menu-open,
+body.menu-open {
+  overflow: hidden !important;
+  height: 100vh !important;
+}
+
 a {
   text-decoration: none;
   color: inherit;
