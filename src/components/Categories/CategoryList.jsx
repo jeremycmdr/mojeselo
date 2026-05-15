@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import './Categories.css';
 
 const CategoryList = () => {
@@ -8,7 +9,7 @@ const CategoryList = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/categories');
+        const response = await fetch(`${API_URL}/categories`);
         const data = await response.json();
         if (data.success) {
           setCategories(data.data);

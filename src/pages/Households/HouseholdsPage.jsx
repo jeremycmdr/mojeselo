@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import AuthModal from '../../components/Auth/AuthModal';
@@ -62,7 +63,7 @@ const HouseholdsPage = () => {
   useEffect(() => {
     const fetchHouseholds = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/households');
+        const response = await fetch(`${API_URL}/households`);
         const data = await response.json();
         if (data.success) {
           setDomacinstva(data.data);

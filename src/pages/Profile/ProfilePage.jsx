@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import ProductsList from '../../components/Products/ProductsList';
@@ -37,7 +38,7 @@ const ProfilePage = () => {
   const fetchUserProducts = async (userId) => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/products/user/${userId}`);
+      const response = await fetch(`${API_URL}/products/user/${userId}`);
       const data = await response.json();
       if (data.success) {
         setUserProducts(data.data);
@@ -69,7 +70,7 @@ const ProfilePage = () => {
   const handleConfirmDelete = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch(`http://localhost:5000/api/products/${selectedProduct.id}`, {
+      const response = await fetch(`${API_URL}/products/${selectedProduct.id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

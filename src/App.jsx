@@ -7,6 +7,7 @@ import TourismPage from './pages/Tourism/TourismPage'
 import OrganicPage from './pages/Organic/OrganicPage'
 import AboutPage from './pages/About/AboutPage'
 import ProfilePage from './pages/Profile/ProfilePage'
+import API_URL from './config'
 
 function App() {
   return (

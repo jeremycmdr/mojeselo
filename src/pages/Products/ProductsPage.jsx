@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import ProductsList from '../../components/Products/ProductsList';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
@@ -19,7 +20,7 @@ const ProductsPage = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/products');
+        const response = await fetch(`${API_URL}/products`);
         const result = await response.json();
         
         if (result.success) {
@@ -32,7 +33,7 @@ const ProductsPage = () => {
 
     const fetchCategories = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/categories');
+        const response = await fetch(`${API_URL}/categories`);
         const data = await response.json();
         if (data.success) {
           setCategories(['Sve', ...data.data.map(cat => cat.name)]);

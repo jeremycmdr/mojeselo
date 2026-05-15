@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import CustomSelect from '../Common/CustomSelect/CustomSelect';
+import API_URL from '../../config';
 import '../Auth/AuthModal.css'; // Ponovo koristimo iste stilove za konzistentnost
 import './AddProductModal.css';
 
@@ -20,7 +21,7 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded, product }) => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/categories');
+        const response = await fetch(`${API_URL}/categories`);
         const data = await response.json();
         if (data.success) {
           // Mapiramo kategorije u format koji CustomSelect razume (ID kao vrednost, Ime kao labela)
@@ -95,8 +96,8 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded, product }) => {
     
     try {
       const url = product 
-        ? `http://localhost:5000/api/products/${product.id}` 
-        : 'http://localhost:5000/api/products';
+        ? `${API_URL}/products/${product.id}` 
+        : `${API_URL}/products`;
       
       const method = product ? 'PUT' : 'POST';
 
