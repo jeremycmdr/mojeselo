@@ -1,117 +1,103 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Products.css';
 
-const products = [
-  {
-    id: 1,
-    name: "Šumski med - Domaćinstvo Petrović",
-    price: "27,90 KM",
-    rating: 5,
-    image: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-  },
-  {
-    id: 2,
-    name: "Mladi Travnički sir - Sirana Mešić",
-    price: "13,90 KM",
-    rating: 5,
-    image: "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-  },
-  {
-    id: 3,
-    name: "Organske paprike",
-    price: "19,00 KM",
-    rating: 3,
-    image: "https://images.unsplash.com/photo-1563514227147-6d2ff665a6a0?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-  },
-  {
-    id: 4,
-    name: "Vranac - Vinarija Vukoje",
-    price: "12,00 KM",
-    rating: 3,
-    image: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-  },
-  {
-    id: 5,
-    name: "Domaća jaja (30 kom) - Farma Zeleni Gaj",
-    price: "12,00 KM",
-    rating: 5,
-    image: "https://images.unsplash.com/photo-1598965402089-897ce52e8355?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-  },
-  {
-    id: 6,
-    name: "Svježi krastavci - Bašta Delić",
-    price: "3,50 KM",
-    rating: 4,
-    image: "https://images.unsplash.com/photo-1449339854873-750e6913301b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-  },
-  {
-    id: 7,
-    name: "Rakija Šljivovica (0.7l) - Destilerija Stari Hrast",
-    price: "25,00 KM",
-    rating: 5,
-    image: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-  },
-  {
-    id: 8,
-    name: "Domaći pekmez od šljiva - Bakina kuhinja",
-    price: "10,00 KM",
-    rating: 5,
-    image: "https://images.unsplash.com/photo-1589135398302-aa463b399711?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-  },
-  {
-    id: 9,
-    name: "Pšenično brašno (5kg) - Mlin Semberija",
-    price: "9,00 KM",
-    rating: 4,
-    image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-  },
-  {
-    id: 10,
-    name: "Svježe jagode - Plantaža Voće",
-    price: "6,00 KM",
-    rating: 5,
-    image: "https://images.unsplash.com/photo-1518635017498-87f514b751ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-  },
-  {
-    id: 11,
-    name: "Kozji sir u maslinovom ulju - Hercegovački krš",
-    price: "18,00 KM",
-    rating: 5,
-    image: "https://images.unsplash.com/photo-1452195100486-9cc805987862?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-  },
-  {
-    id: 12,
-    name: "Goveđi pršut - Sušara Mujić",
-    price: "35,00 KM",
-    rating: 5,
-    image: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-  }
+// Generišemo 50 proizvoda za demo (dupliranjem i modifikacijom postojećih)
+const baseProducts = [
+  { id: 1, name: "Šumski med - Domaćinstvo Petrović", price: "27,90 KM", rating: 5, isOrganic: true, image: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" },
+  { id: 2, name: "Mladi Travnički sir - Sirana Mešić", price: "13,90 KM", rating: 5, image: "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" },
+  { id: 3, name: "Organske paprike", price: "19,00 KM", rating: 3, isOrganic: true, image: "https://images.unsplash.com/photo-1563514227147-6d2ff665a6a0?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" },
+  { id: 4, name: "Vranac - Vinarija Vukoje", price: "12,00 KM", rating: 3, image: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" },
+  { id: 5, name: "Domaća jaja (30 kom) - Farma Zeleni Gaj", price: "12,00 KM", rating: 5, isOrganic: true, image: "https://images.unsplash.com/photo-1598965402089-897ce52e8355?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" },
+  { id: 6, name: "Svježi krastavci - Bašta Delić", price: "3,50 KM", rating: 4, image: "https://images.unsplash.com/photo-1449339854873-750e6913301b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" },
+  { id: 7, name: "Rakija Šljivovica (0.7l) - Destilerija Stari Hrast", price: "25,00 KM", rating: 5, image: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" },
+  { id: 8, name: "Domaći pekmez od šljiva - Bakina kuhinja", price: "10,00 KM", rating: 5, isOrganic: true, image: "https://images.unsplash.com/photo-1518635017498-87f514b751ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" },
+  { id: 9, name: "Pšenično brašno (5kg) - Mlin Semberija", price: "9,00 KM", rating: 4, image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" },
+  { id: 10, name: "Svježe jagode - Plantaža Voće", price: "6,00 KM", rating: 5, isOrganic: true, image: "https://images.unsplash.com/photo-1518635017498-87f514b751ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" },
+  { id: 11, name: "Kozji sir u maslinovom ulju - Hercegovački krš", price: "18,00 KM", rating: 5, image: "https://images.unsplash.com/photo-1452195100486-9cc805987862?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" },
+  { id: 12, name: "Goveđi pršut - Sušara Mujić", price: "35,00 KM", rating: 5, image: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" }
 ];
 
-const ProductsList = () => {
+// Kreiramo 200 proizvoda za demo
+const products = Array.from({ length: 200 }, (_, i) => ({
+  ...baseProducts[i % baseProducts.length],
+  id: i + 1
+}));
+
+const ProductsList = ({ title }) => {
+  const [visibleCount, setVisibleCount] = useState(25);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const loadMore = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setVisibleCount(prev => prev + 25);
+      setIsLoading(false);
+    }, 800);
+  };
+
+  const currentProducts = products.slice(0, visibleCount);
+  const hasMore = visibleCount < products.length;
+
   return (
     <section className="products-section">
-      <h2 className="section-title"><span>NOVI PROIZVODI</span></h2>
+      {title && <h2 className="section-title"><span>{title}</span></h2>}
       <div className="products-grid">
-        {products.map(product => (
-          <div key={product.id} className="product-card">
+        {currentProducts.map(product => (
+          <div key={product.id} className={`product-card ${product.isOrganic ? 'organic' : ''}`}>
             <div className="product-image-container">
               <img src={product.image} alt={product.name} />
+              {product.isOrganic && (
+                <div className="organic-label">
+                  <svg viewBox="0 0 24 24" className="leaf-icon">
+                    <path fill="currentColor" d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z" />
+                  </svg>
+                  <span>Organsko</span>
+                </div>
+              )}
             </div>
             <div className="product-info">
               <h3 className="product-name">{product.name}</h3>
               <div className="product-meta">
                 <span className="product-price">{product.price}</span>
                 {product.rating > 0 && (
-                  <span className="product-rating">
-                    <span className="star">★</span> {product.rating}
-                  </span>
+                  <div className="product-rating">
+                    <div className="stars-list">
+                      {[...Array(5)].map((_, index) => (
+                        <span 
+                          key={index} 
+                          className={`star ${index >= product.rating ? 'empty' : ''}`}
+                        >
+                          ★
+                        </span>
+                      ))}
+                    </div>
+                    <span className="rating-value">{product.rating}</span>
+                  </div>
                 )}
               </div>
             </div>
           </div>
         ))}
       </div>
+
+      {hasMore && (
+        <div className="load-more-container">
+          <button 
+            className={`load-more-btn ${isLoading ? 'loading' : ''}`} 
+            onClick={loadMore}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <span className="spinner"></span>
+                Učitavanje...
+              </>
+            ) : (
+              'Učitaj još'
+            )}
+          </button>
+        </div>
+      )}
     </section>
   );
 };

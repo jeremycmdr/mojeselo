@@ -1,19 +1,20 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Header.css';
 
 const Header = ({ onOpenAuth }) => {
   return (
     <header className="main-header">
       <div className="header-container">
-        <div className="logo-area">
+        <Link to="/" className="logo-area" style={{ textDecoration: 'none' }}>
           <span className="logo-icon">🌿</span>
           <span className="logo-text">SeloMoje.ba</span>
-        </div>
+        </Link>
         
         <nav className="main-nav">
           <ul>
-            <li><a href="#">Domaći Proizvodi</a></li>
-            <li><a href="#">Domaćinstva</a></li>
+            <li><Link to="/domaci-proizvodi">Domaći Proizvodi</Link></li>
+            <li><Link to="/domacinstva">Domaćinstva</Link></li>
             <li><a href="#">Seoski Turizam</a></li>
             <li><a href="#">Sve Organsko</a></li>
             <li><a href="#">O Nama</a></li>

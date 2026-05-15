@@ -30,7 +30,7 @@ const Home = () => {
           </div>
 
           <div className="left-middle-section">
-            <ProductsList />
+            <ProductsList title="NOVI PROIZVODI" />
           </div>
 
           <div className="mobile-tourism">

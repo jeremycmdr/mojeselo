@@ -1,0 +1,117 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
+import './CustomSelect.css';
+
+const CustomSelect = ({ value, onChange, options, placeholder, hasError }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0, width: 0 });
+  const triggerRef = useRef(null);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target) && 
+          triggerRef.current && !triggerRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    const updatePosition = () => {
+      if (triggerRef.current && isOpen) {
+        const rect = triggerRef.current.getBoundingClientRect();
+        setDropdownPos({
+          top: rect.bottom + window.scrollY,
+          left: rect.left + window.scrollX,
+          width: rect.width
+        });
+      }
+    };
+
+    if (isOpen) {
+      updatePosition();
+      window.addEventListener('resize', updatePosition);
+      window.addEventListener('scroll', updatePosition, true);
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('resize', updatePosition);
+      window.removeEventListener('scroll', updatePosition, true);
+    };
+  }, [isOpen]);
+
+  const handleSelect = (optionValue) => {
+    onChange(optionValue);
+    setIsOpen(false);
+  };
+
+  // Helper to render options (handles both flat array and grouped options)
+  const renderOptions = () => {
+    return options.map((item, index) => {
+      if (typeof item === 'object' && item.options) {
+        // Grouped options
+        return (
+          <div key={item.label || index} className="optgroup-container">
+            <div className="optgroup-label">{item.label}</div>
+            {item.options.map((opt) => (
+              <div 
+                key={opt}
+                className={`custom-option ${value === opt ? 'selected' : ''}`}
+                onClick={() => handleSelect(opt)}
+              >
+                {opt}
+              </div>
+            ))}
+          </div>
+        );
+      } else {
+        // Simple option
+        const optValue = typeof item === 'object' ? item.value : item;
+        const optLabel = typeof item === 'object' ? item.label : item;
+        return (
+          <div 
+            key={optValue}
+            className={`custom-option ${value === optValue ? 'selected' : ''}`}
+            onClick={() => handleSelect(optValue)}
+          >
+            {optLabel}
+          </div>
+        );
+      }
+    });
+  };
+
+  return (
+    <div className={`custom-select-container ${hasError ? 'has-error' : ''}`}>
+      <button 
+        ref={triggerRef}
+        type="button"
+        className={`custom-select-trigger ${isOpen ? 'active' : ''}`}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span className="selected-value">{value || placeholder}</span>
+        <span className="arrow-icon">▼</span>
+      </button>
+
+      {isOpen && createPortal(
+        <div 
+          className="custom-options-dropdown" 
+          ref={dropdownRef}
+          style={{
+            position: 'absolute',
+            top: `${dropdownPos.top}px`,
+            left: `${dropdownPos.left}px`,
+            width: `${dropdownPos.width}px`,
+            zIndex: 9999
+          }}
+        >
+          {renderOptions()}
+        </div>,
+        document.body
+      )}
+    </div>
+  );
+};
+
+export default CustomSelect;

@@ -53,7 +53,7 @@
 .auth-form-container {
   padding: 30px 40px 40px 40px;
   overflow-y: auto;
-  flex: 1;
+  flex: 0 1 auto;
 }
 
 .tab-btn {
@@ -111,22 +111,29 @@
   color: var(--text-primary);
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
   padding: 12px 15px;
   border: 1px solid var(--border-color);
   border-radius: 10px;
   font-family: inherit;
   font-size: 14px;
   transition: border-color 0.2s, box-shadow 0.2s;
+  background-color: var(--white);
+  color: var(--text-primary);
+  width: 100%;
+  cursor: pointer;
 }
 
-.form-group input:focus {
+.form-group input:focus,
+.form-group select:focus {
   outline: none;
   border-color: var(--primary-green);
   box-shadow: 0 0 0 4px rgba(82, 117, 58, 0.1);
 }
 
-.form-group.has-error input {
+.form-group.has-error input,
+.form-group.has-error select {
   border-color: #e74c3c;
   background-color: #fdf2f2;
 }

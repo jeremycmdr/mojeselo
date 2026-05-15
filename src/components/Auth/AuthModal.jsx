@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
+import CustomSelect from '../Common/CustomSelect/CustomSelect';
 import './AuthModal.css';
 
 const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
@@ -11,6 +13,29 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
     location: ''
   });
   const [errors, setErrors] = useState({});
+
+  const locations = [
+    {
+      label: 'Federacija BiH',
+      options: [
+        'Unsko-sanski kanton', 'Posavski kanton', 'Tuzlanski kanton', 
+        'Zeničko-dobojski kanton', 'Bosansko-podrinjski kanton', 
+        'Srednjobosanski kanton', 'Hercegovačko-neretvanski kanton', 
+        'Zapadnohercegovački kanton', 'Kanton Sarajevo', 'Kanton 10'
+      ]
+    },
+    {
+      label: 'Republika Srpska',
+      options: [
+        'Regija Prijedor', 'Regija Bijeljina', 'Regija Trebinje', 
+        'Regija Doboj', 'Regija Banja Luka', 'Regija Istočno Sarajevo'
+      ]
+    },
+    {
+      label: 'Ostalo',
+      options: ['Brčko Distrikt']
+    }
+  ];
 
   const validatePassword = (password) => {
     const minLength = 8;
@@ -30,30 +55,66 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
     setFormData(prev => ({ ...prev, [name]: value }));
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const validateForm = () => {
     const newErrors = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (mode === 'login' || mode === 'register' || mode === 'forgot-password') {
+      if (!formData.email) {
+        newErrors.email = 'Molimo unesite email adresu.';
+      } else if (!emailRegex.test(formData.email)) {
+        newErrors.email = 'Molimo unesite ispravnu email adresu.';
+      }
+    }
+
+    if (mode === 'login' || mode === 'register') {
+      if (!formData.password) {
+        newErrors.password = 'Molimo unesite lozinku.';
+      }
+    }
 
     if (mode === 'register') {
+      if (!formData.name) {
+        newErrors.name = 'Molimo unesite vaše ime ili naziv domaćinstva.';
+      } else if (formData.name.length < 2) {
+        newErrors.name = 'Naziv mora imati najmanje 2 karaktera.';
+      }
+      
+      if (!formData.location) {
+        newErrors.location = 'Molimo unesite vašu lokaciju.';
+      }
+
       const passwordError = validatePassword(formData.password);
-      if (passwordError) newErrors.password = passwordError;
+      if (passwordError) {
+        newErrors.password = passwordError;
+      }
       
       if (formData.password !== formData.confirmPassword) {
         newErrors.confirmPassword = 'Lozinke se ne podudaraju.';
       }
     }
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-    console.log('Form submitted:', formData);
-    // Here you would normally call your API
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    if (validateForm()) {
+      console.log('Form submitted successfully:', mode, formData);
+      // Ovde bi išao poziv ka API-ju
+    } else {
+      console.log('Form has validation errors');
+    }
   };
 
   // Reset form and prevent scrolling when modal state changes
@@ -87,13 +148,19 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
           <div className="auth-tabs">
             <button 
               className={`tab-btn ${mode === 'login' ? 'active' : ''}`}
-              onClick={() => setMode('login')}
+              onClick={() => {
+                setMode('login');
+                setErrors({});
+              }}
             >
               Prijava
             </button>
             <button 
               className={`tab-btn ${mode === 'register' ? 'active' : ''}`}
-              onClick={() => setMode('register')}
+              onClick={() => {
+                setMode('register');
+                setErrors({});
+              }}
             >
               Registracija
             </button>
@@ -102,24 +169,43 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
 
         <div className="auth-form-container">
           {mode === 'login' && (
-            <form className="auth-form" key="login">
+            <form className="auth-form" key="login" onSubmit={handleSubmit} noValidate>
               <h2>Dobrodošli nazad</h2>
               <p>Prijavite se na svoj nalog</p>
               
-              <div className="form-group">
+              <div className={`form-group ${errors.email ? 'has-error' : ''}`}>
                 <label>Email adresa</label>
-                <input type="email" placeholder="npr. petar@email.com" required />
+                <input 
+                  type="email" 
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="npr. petar@email.com" 
+                  maxLength="64"
+                />
+                {errors.email && <span className="error-message">{errors.email}</span>}
               </div>
               
-              <div className="form-group">
+              <div className={`form-group ${errors.password ? 'has-error' : ''}`}>
                 <label>Lozinka</label>
-                <input type="password" placeholder="Vaša lozinka" required />
+                <input 
+                  type="password" 
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  placeholder="Vaša lozinka" 
+                  maxLength="64"
+                />
+                {errors.password && <span className="error-message">{errors.password}</span>}
               </div>
               
               <button type="submit" className="submit-btn">Prijavi se</button>
               
               <div className="auth-footer">
-                <button type="button" className="link-btn" onClick={() => setMode('forgot-password')}>
+                <button type="button" className="link-btn" onClick={() => {
+                  setMode('forgot-password');
+                  setErrors({});
+                }}>
                   Zaboravili ste lozinku?
                 </button>
               </div>
@@ -127,19 +213,30 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
           )}
 
           {mode === 'forgot-password' && (
-            <form className="auth-form" key="forgot">
+            <form className="auth-form" key="forgot" onSubmit={handleSubmit} noValidate>
               <h2>Reset lozinke</h2>
               <p>Unesite svoj email kako bismo vam poslali link za reset lozinke.</p>
               
-              <div className="form-group">
+              <div className={`form-group ${errors.email ? 'has-error' : ''}`}>
                 <label>Email adresa</label>
-                <input type="email" placeholder="npr. petar@email.com" required />
+                <input 
+                  type="email" 
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="npr. petar@email.com" 
+                  maxLength="64"
+                />
+                {errors.email && <span className="error-message">{errors.email}</span>}
               </div>
               
               <button type="submit" className="submit-btn">Pošalji link</button>
               
               <div className="auth-footer">
-                <button type="button" className="link-btn" onClick={() => setMode('login')}>
+                <button type="button" className="link-btn" onClick={() => {
+                  setMode('login');
+                  setErrors({});
+                }}>
                   Nazad na prijavu
                 </button>
               </div>
@@ -147,7 +244,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
           )}
 
           {mode === 'register' && (
-            <form className="auth-form" key="register" onSubmit={handleSubmit}>
+            <form className="auth-form" key="register" onSubmit={handleSubmit} noValidate>
               <h2>Postanite dio sela</h2>
               <p>Registrujte svoje domaćinstvo</p>
               
@@ -159,7 +256,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                   value={formData.name}
                   onChange={handleInputChange}
                   placeholder="npr. Domaćinstvo Petrović" 
-                  required 
+                  maxLength="64"
                 />
                 {errors.name && <span className="error-message">{errors.name}</span>}
               </div>
@@ -172,7 +269,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                   value={formData.email}
                   onChange={handleInputChange}
                   placeholder="npr. petar@email.com" 
-                  required 
+                  maxLength="64"
                 />
                 {errors.email && <span className="error-message">{errors.email}</span>}
               </div>
@@ -185,7 +282,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                   value={formData.password}
                   onChange={handleInputChange}
                   placeholder="Unesite lozinku" 
-                  required 
+                  maxLength="64"
                 />
                 <div className="password-requirements">
                   {[
@@ -211,20 +308,19 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
                   placeholder="Ponovite lozinku" 
-                  required 
+                  maxLength="64"
                 />
                 {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
               </div>
 
               <div className={`form-group ${errors.location ? 'has-error' : ''}`}>
                 <label>Grad / Lokacija</label>
-                <input 
-                  type="text" 
-                  name="location"
+                <CustomSelect 
                   value={formData.location}
-                  onChange={handleInputChange}
-                  placeholder="npr. Konjic" 
-                  required 
+                  onChange={(val) => handleInputChange({ target: { name: 'location', value: val } })}
+                  options={locations}
+                  placeholder="Izaberite lokaciju..."
+                  hasError={!!errors.location}
                 />
                 {errors.location && <span className="error-message">{errors.location}</span>}
               </div>
