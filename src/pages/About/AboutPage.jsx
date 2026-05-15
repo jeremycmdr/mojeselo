@@ -8,10 +8,10 @@ const AboutPage = () => {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
 
   return (
-    <div className="about-page">
+    <div className="about-page site-wrapper">
       <Header onOpenAuth={() => setIsAuthOpen(true)} />
 
-      <main className="about-main">
+      <main className="about-main main-content">
         {/* Hero Section */}
         <section className="about-hero">
           <div className="about-container">

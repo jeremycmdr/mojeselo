@@ -1,8 +1,12 @@
-.section-title {
+.products-section {
+  width: 100%;
+}
+
+.products-section-title {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--primary-green);
+  color: var(--primary-green) !important; /* Force green color */
   font-size: 22px;
   font-weight: 800;
   text-transform: uppercase;
@@ -10,7 +14,7 @@
   margin-bottom: 30px;
 }
 
-.section-title span {
+.products-section-title span {
   border: 1px solid var(--border-color);
   padding: 10px 25px;
   background-color: var(--white);
@@ -19,8 +23,8 @@
   z-index: 1;
 }
 
-.section-title::before,
-.section-title::after {
+.products-section-title::before,
+.products-section-title::after {
   content: "";
   height: 1px;
   background-color: var(--border-color);
@@ -192,9 +196,23 @@
 
 .product-name {
   font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 15px;
-  min-height: 40px; /* To align buttons at the bottom if text lengths vary */
+  font-weight: 700;
+  margin-bottom: 5px;
+  color: var(--text-primary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.product-category {
+  display: block;
+  font-size: 11px;
+  color: var(--primary-green);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
 }
 
 .product-meta {
@@ -301,22 +319,18 @@
   background: white;
   border-radius: 20px;
   border: 1px dashed var(--border-color);
+  width: 100%;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .no-results p {
   font-size: 18px;
   color: var(--text-secondary);
   margin-bottom: 20px;
-}
-
-.reset-btn {
-  background: var(--primary-green);
-  color: white;
-  border: none;
-  padding: 10px 25px;
-  border-radius: 10px;
-  font-weight: 700;
-  cursor: pointer;
 }
 
 .add-to-cart-btn {
@@ -336,4 +350,41 @@
 .add-to-cart-btn:hover {
   background-color: #3e5a2b;
   box-shadow: 0 4px 10px rgba(82, 117, 58, 0.2);
+}
+
+.product-actions-admin {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.edit-btn, .delete-btn {
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.edit-btn {
+  background-color: #f0f2f5;
+  color: var(--text-primary);
+}
+
+.edit-btn:hover {
+  background-color: #e4e6e9;
+  color: var(--primary-green);
+}
+
+.delete-btn {
+  background-color: #fff1f0;
+  color: #d93025;
+}
+
+.delete-btn:hover {
+  background-color: #fee8e7;
+  transform: translateY(-1px);
 }

@@ -49,10 +49,10 @@ const OrganicPage = () => {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
 
   return (
-    <div className="organic-page">
+    <div className="organic-page site-wrapper">
       <Header onOpenAuth={() => setIsAuthOpen(true)} />
 
-      <main className="organic-main">
+      <main className="organic-main main-content">
         {/* Hero Section */}
         <section className="organic-hero">
           <div className="organic-container">

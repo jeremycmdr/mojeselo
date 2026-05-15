@@ -281,23 +281,40 @@ input:checked+.slider:before {
   height: 150px;
   object-fit: cover;
   display: block;
+  transition: transform 0.5s ease;
 }
 
-/* Organic badge on cover */
-.organic-badge {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: var(--primary-green);
-  color: white;
-  padding: 5px 11px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 700;
+.farm-cover-placeholder {
+  width: 100%;
+  height: 150px;
+  background: linear-gradient(135deg, #f5f7f2 0%, #eef2e9 100%);
   display: flex;
   align-items: center;
-  gap: 5px;
-  line-height: 1;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.placeholder-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.1;
+  background-image: radial-gradient(var(--primary-green) 0.5px, transparent 0.5px);
+  background-size: 15px 15px;
+}
+
+.placeholder-icon {
+  font-size: 38px;
+  opacity: 0.2;
+  filter: grayscale(1);
+  z-index: 1;
+}
+
+.farm-card:hover .farm-cover img {
+  transform: scale(1.05);
 }
 
 /* Circular avatar overlapping cover */
@@ -313,6 +330,19 @@ input:checked+.slider:before {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   background: #eee;
   z-index: 1;
+}
+
+.farm-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  background: var(--primary-green);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 1px;
 }
 
 .farm-avatar {

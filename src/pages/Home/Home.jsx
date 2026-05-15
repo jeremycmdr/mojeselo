@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Home.css';
 import Header from '../../components/Header/Header';
 import Hero from '../../components/Hero/Hero';
@@ -10,18 +10,35 @@ import Footer from '../../components/Footer/Footer';
 import AuthModal from '../../components/Auth/AuthModal';
 
 const Home = () => {
-  const [isAuthModalOpen, setIsAuthModalOpen] = React.useState(false);
-  const [authMode, setAuthMode] = React.useState('login');
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState('login');
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/products');
+        const result = await response.json();
+        
+        if (result.success) {
+          setProducts(result.data);
+        }
+      } catch (error) {
+        console.error("Greška pri preuzimanju proizvoda:", error);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   const openAuth = (mode = 'login') => {
     setAuthMode(mode);
     setIsAuthModalOpen(true);
   };
   return (
-    <div className="home-page">
+    <div className="home-page site-wrapper">
       <Header onOpenAuth={openAuth} />
       
-      <main className="home-main-content">
+      <main className="home-main-content main-content">
         <div className="left-column">
           <Hero />
           
@@ -30,7 +47,7 @@ const Home = () => {
           </div>
 
           <div className="left-middle-section">
-            <ProductsList title="NOVI PROIZVODI" />
+            <ProductsList title="NOVI PROIZVODI" products={products} />
           </div>
 
           <div className="mobile-tourism">

@@ -24,9 +24,8 @@
 }
 
 .left-middle-section {
-  display: flex;
   padding: 30px;
-  gap: 30px;
+  width: 100%;
 }
 
 .mobile-categories {
@@ -91,5 +90,14 @@
   }
   .right-column {
     padding: 20px;
+  }
+}
+
+@media (max-width: 320px) {
+  .left-middle-section {
+    padding: 10px;
+  }
+  .right-column {
+    padding: 15px;
   }
 }

@@ -1,0 +1,145 @@
+.profile-page {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-content {
+  flex: 1;
+}
+
+.profile-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  margin-bottom: 40px;
+}
+
+.profile-info-card {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.profile-avatar-large {
+  width: 100px;
+  height: 100px;
+  background: var(--primary-green);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  font-weight: 800;
+  box-shadow: 0 8px 25px rgba(82, 117, 58, 0.2);
+}
+
+.profile-details h1 {
+  margin: 0 0 8px 0;
+  font-size: 28px;
+  color: var(--text-primary);
+}
+
+.profile-location, .profile-email {
+  margin: 4px 0;
+  color: #666;
+  font-size: 15px;
+}
+
+.add-product-btn {
+  background: var(--primary-green);
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(82, 117, 58, 0.3);
+}
+
+.add-product-btn:hover {
+  background: #3e5a2c;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(82, 117, 58, 0.4);
+}
+
+.plus-icon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.section-header h2 {
+  font-size: 24px;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.product-count {
+  background: #e9ecef;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+}
+
+.empty-products {
+  background: white;
+  padding: 60px;
+  border-radius: 16px;
+  text-align: center;
+  color: #666;
+  border: 2px dashed #dee2e6;
+}
+
+.create-first-btn {
+  background: none;
+  border: 2px solid var(--primary-green);
+  color: var(--primary-green);
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: all 0.2s;
+}
+
+.create-first-btn:hover {
+  background: var(--primary-green);
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+  .profile-info-card {
+    flex-direction: column;
+    gap: 15px;
+  }
+}

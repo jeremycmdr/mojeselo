@@ -174,10 +174,10 @@ const TourismPage = () => {
   const hasMore = visibleCount < filtered.length;
 
   return (
-    <div className="tourism-page">
+    <div className="tourism-page site-wrapper">
       <Header onOpenAuth={handleOpenAuth} />
 
-      <main className="tourism-main">
+      <main className="tourism-main main-content">
         <div className="tourism-hero">
           <div className="tourism-container">
             <div className="hero-content">

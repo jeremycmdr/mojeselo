@@ -87,6 +87,17 @@ ul {
   background: #b8b3a0;
 }
 
+/* Global Layout for Sticky Footer */
+.site-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+}
+
 /* Firefox */
 * {
   scrollbar-width: thin;

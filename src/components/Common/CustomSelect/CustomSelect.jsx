@@ -82,6 +82,25 @@ const CustomSelect = ({ value, onChange, options, placeholder, hasError }) => {
     });
   };
 
+  const getSelectedLabel = () => {
+    if (!value) return placeholder;
+    
+    // Tražimo opciju koja odgovara trenutnoj vrednosti
+    for (const item of options) {
+      if (typeof item === 'object') {
+        if (item.options) {
+          const subOpt = item.options.find(o => (typeof o === 'object' ? o.value : o) === value);
+          if (subOpt) return typeof subOpt === 'object' ? subOpt.label : subOpt;
+        } else if (item.value === value) {
+          return item.label;
+        }
+      } else if (item === value) {
+        return item;
+      }
+    }
+    return value;
+  };
+
   return (
     <div className={`custom-select-container ${hasError ? 'has-error' : ''}`}>
       <button 
@@ -90,7 +109,7 @@ const CustomSelect = ({ value, onChange, options, placeholder, hasError }) => {
         className={`custom-select-trigger ${isOpen ? 'active' : ''}`}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span className="selected-value">{value || placeholder}</span>
+        <span className="selected-value">{getSelectedLabel()}</span>
         <span className="arrow-icon">▼</span>
       </button>
 

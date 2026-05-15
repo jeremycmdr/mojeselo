@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ProductsList from '../../components/Products/ProductsList';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
@@ -13,23 +13,38 @@ const ProductsPage = () => {
   const [category, setCategory] = useState('Sve');
   const [sortBy, setSortBy] = useState('Najnovije');
   const [isOrganicOnly, setIsOrganicOnly] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState(['Sve']);
 
-  const categoryOptions = [
-    'Sve',
-    'Voće i povrće',
-    'Žitarice i brašno',
-    'Mliječni proizvodi',
-    'Meso i mesni proizvodi',
-    'Jaja',
-    'Alkoholna pića',
-    'Med i pčelinji proizvodi',
-    'Bilje i čajevi',
-    'Orašasti plodovi i sjemenke',
-    'Bezalkoholna pića',
-    'Prerađeni proizvodi',
-    'Sadnice i rasad',
-    'Zanatstvo i rukotvorine'
-  ];
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/products');
+        const result = await response.json();
+        
+        if (result.success) {
+          setProducts(result.data);
+        }
+      } catch (error) {
+        console.error("Greška pri preuzimanju proizvoda:", error);
+      }
+    };
+
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/categories');
+        const data = await response.json();
+        if (data.success) {
+          setCategories(['Sve', ...data.data.map(cat => cat.name)]);
+        }
+      } catch (error) {
+        console.error("Greška pri preuzimanju kategorija:", error);
+      }
+    };
+
+    fetchProducts();
+    fetchCategories();
+  }, []);
 
   const sortOptions = [
     { label: 'Najnovije', value: 'Najnovije' },
@@ -44,10 +59,10 @@ const ProductsPage = () => {
   };
 
   return (
-    <div className="products-page">
+    <div className="products-page site-wrapper">
       <Header onOpenAuth={handleOpenAuth} />
       
-      <main className="products-main-content">
+      <main className="products-main-content main-content">
         <div className="products-hero">
           <div className="products-page-container">
             <div className="hero-content">
@@ -77,9 +92,9 @@ const ProductsPage = () => {
                 <div style={{ width: '280px' }}>
                   <CustomSelect 
                     value={category} 
-                    onChange={setCategory} 
-                    options={categoryOptions} 
-                    placeholder="Sve Kategorije"
+                    onChange={(val) => setCategory(val)} 
+                    options={categories} 
+                    placeholder="Sve kategorije"
                   />
                 </div>
               </div>
@@ -124,6 +139,7 @@ const ProductsPage = () => {
             category={category}
             sortBy={sortBy}
             isOrganicOnly={isOrganicOnly}
+            products={products}
           />
         </div>
       </main>

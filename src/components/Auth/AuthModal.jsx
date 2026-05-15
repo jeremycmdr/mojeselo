@@ -106,21 +106,102 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (validateForm()) {
-      console.log('Form submitted successfully:', mode, formData);
-      // Ovde bi išao poziv ka API-ju
-    } else {
-      console.log('Form has validation errors');
+      setLoading(true);
+      setErrors({});
+      
+      if (mode === 'register') {
+        try {
+          const response = await fetch('http://localhost:5000/api/auth/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              name: formData.name,
+              email: formData.email,
+              password: formData.password,
+              town: formData.location // Mapiramo lokaciju na town polje u bazi
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            setSuccessMessage('Uspešna registracija! Molimo proverite vaš email kako biste verifikovali nalog.');
+            // Čuvamo token u localStorage (opciono, za login)
+            localStorage.setItem('token', data.token);
+            
+            // Zatvaramo modal nakon 4 sekunde (da korisnik stigne da pročita poruku)
+            setTimeout(() => {
+              onClose();
+              setSuccessMessage('');
+            }, 4000);
+          } else {
+            setErrors({ server: data.message || 'Greška pri registraciji.' });
+          }
+        } catch (error) {
+          setErrors({ server: 'Server nije dostupan. Proverite da li je backend pokrenut.' });
+        } finally {
+          setLoading(false);
+        }
+      } else if (mode === 'login') {
+        try {
+          const response = await fetch('http://localhost:5000/api/auth/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email: formData.email,
+              password: formData.password
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            setSuccessMessage('Uspešna prijava! Preusmeravanje...');
+            localStorage.setItem('token', data.token);
+            
+            // Ovde bi mogao sačuvati i podatke o korisniku
+            localStorage.setItem('user', JSON.stringify(data.user));
+
+            setTimeout(() => {
+              onClose();
+              setSuccessMessage('');
+              window.location.reload(); // Osvežavamo stranicu da se vidi da je korisnik ulogovan
+            }, 1500);
+          } else {
+            setErrors({ server: data.message || 'Neispravan email ili lozinka.' });
+          }
+        } catch (error) {
+          setErrors({ server: 'Server nije dostupan.' });
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        // Ovde će ići zaboravljena lozinka
+        setLoading(false);
+      }
     }
   };
 
-  // Reset form and prevent scrolling when modal state changes
+  // Reset form and handle Escape key
   useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      document.addEventListener('keydown', handleEscape);
       // Reset form data and errors when opening
       setFormData({
         email: '',
@@ -134,13 +215,16 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
     } else {
       document.body.style.overflow = 'unset';
     }
-    return () => { document.body.style.overflow = 'unset'; };
-  }, [isOpen, initialMode]);
+    return () => { 
+      document.body.style.overflow = 'unset';
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isOpen, initialMode, onClose]);
 
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay">
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <button className="close-modal" onClick={onClose}>&times;</button>
         
@@ -168,6 +252,9 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
         )}
 
         <div className="auth-form-container">
+          {successMessage && <div className="auth-success-alert">{successMessage}</div>}
+          {errors.server && <div className="auth-error-alert">{errors.server}</div>}
+
           {mode === 'login' && (
             <form className="auth-form" key="login" onSubmit={handleSubmit} noValidate>
               <h2>Dobrodošli nazad</h2>
@@ -199,7 +286,9 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 {errors.password && <span className="error-message">{errors.password}</span>}
               </div>
               
-              <button type="submit" className="submit-btn">Prijavi se</button>
+              <button type="submit" className="submit-btn" disabled={loading}>
+                {loading ? 'Prijava...' : 'Prijavi se'}
+              </button>
               
               <div className="auth-footer">
                 <button type="button" className="link-btn" onClick={() => {
@@ -325,7 +414,9 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 {errors.location && <span className="error-message">{errors.location}</span>}
               </div>
               
-              <button type="submit" className="submit-btn">Započni registraciju</button>
+              <button type="submit" className="submit-btn" disabled={loading}>
+                {loading ? 'Registracija...' : 'Započni registraciju'}
+              </button>
             </form>
           )}
         </div>

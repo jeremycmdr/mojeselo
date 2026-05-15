@@ -316,3 +316,42 @@
     font-size: 15px;
   }
 }
+
+@media (max-width: 320px) {
+  .modal-content {
+    max-width: 95%;
+    max-height: 90vh;
+  }
+  
+  .auth-tabs {
+    padding: 20px 10px 0 10px;
+    gap: 10px;
+  }
+  
+  .auth-form-container {
+    padding: 10px 10px 20px 10px;
+  }
+
+  .auth-form h2 {
+    font-size: 18px;
+  }
+
+  .auth-form p {
+    font-size: 12px;
+    margin-bottom: 15px;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-group input,
+  .form-group select {
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  .tab-btn {
+    font-size: 13px;
+  }
+}
