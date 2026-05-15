@@ -3,9 +3,9 @@ import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import AuthModal from '../../components/Auth/AuthModal';
 import CustomSelect from '../../components/Common/CustomSelect/CustomSelect';
-import './Domacinstva.css';
+import './HouseholdsPage.css';
 
-const domacinstva = [
+const baseHouseholds = [
   {
     id: 1,
     name: "Domaćinstvo Petrović",
@@ -16,7 +16,7 @@ const domacinstva = [
     reviews: 34,
     products: 12,
     isOrganic: true,
-    coverImage: "https://images.unsplash.com/photo-1500076656116-558758f991c1?w=600&q=80",
+    coverImage: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=600&q=80",
     avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80"
   },
   {
@@ -94,7 +94,7 @@ const domacinstva = [
     reviews: 39,
     products: 9,
     isOrganic: true,
-    coverImage: "https://images.unsplash.com/photo-1511044568932-338ceba0ad4b?w=600&q=80",
+    coverImage: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&q=80",
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80"
   },
   {
@@ -111,6 +111,13 @@ const domacinstva = [
     avatar: "https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?w=100&q=80"
   }
 ];
+
+// Generišemo 100 domaćinstava za demo
+const domacinstva = Array.from({ length: 100 }, (_, i) => ({
+  ...baseHouseholds[i % baseHouseholds.length],
+  id: i + 1,
+  name: `${baseHouseholds[i % baseHouseholds.length].name} ${i + 1}`
+}));
 
 const locationOptions = [
   'Sve lokacije',
@@ -131,18 +138,6 @@ const locationOptions = [
   { label: 'Ostalo', options: ['Brčko Distrikt'] }
 ];
 
-const typeOptions = [
-  'Svi tipovi',
-  'Pčelarstvo',
-  'Voćarstvo',
-  'Povrtarstvo',
-  'Stočarstvo',
-  'Mljekarstvo',
-  'Vinarstvo',
-  'Mlinovi i prerađevine',
-  'Rukotvorine'
-];
-
 const sortOptions = [
   { label: 'Najnovije', value: 'najnovije' },
   { label: 'Najbolje ocijenjeno', value: 'ocjena' },
@@ -158,17 +153,27 @@ const StarRating = ({ rating }) => (
   </div>
 );
 
-const DomacinstvaTPage = () => {
+const HouseholdsPage = () => {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState('login');
   const [searchQuery, setSearchQuery] = useState('');
   const [location, setLocation] = useState('Sve lokacije');
   const [sortBy, setSortBy] = useState('najnovije');
   const [isOrganicOnly, setIsOrganicOnly] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(25);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const handleOpenAuth = (mode) => {
     setAuthMode(mode);
     setIsAuthOpen(true);
+  };
+
+  const handleLoadMore = () => {
+    setIsLoadingMore(true);
+    setTimeout(() => {
+      setVisibleCount(prev => prev + 25);
+      setIsLoadingMore(false);
+    }, 800);
   };
 
   const activeSortLabel = sortOptions.find(o => o.value === sortBy)?.label || 'Najnovije';
@@ -181,18 +186,24 @@ const DomacinstvaTPage = () => {
     return true;
   });
 
+  const currentHouseholds = filtered.slice(0, visibleCount);
+  const hasMore = visibleCount < filtered.length;
+
   return (
     <div className="domacinstva-page">
       <Header onOpenAuth={handleOpenAuth} />
 
       <main className="domacinstva-main">
-        <div className="domacinstva-container">
-          <div className="page-header">
-            <h1>Domaćinstva</h1>
-            <p>Upoznajte porodice iza svakog proizvoda – direktno s BiH sela</p>
+        <div className="domacinstva-hero">
+          <div className="domacinstva-container">
+            <div className="hero-content">
+              <h1>Domaćinstva</h1>
+              <p>Upoznajte porodice iza svakog proizvoda – direktno s BiH sela</p>
+            </div>
           </div>
+        </div>
 
-          {/* Toolbar */}
+        <div className="domacinstva-container">
           <div className="domacinstva-toolbar">
             <div className="toolbar-left">
               <div className="search-box">
@@ -201,7 +212,10 @@ const DomacinstvaTPage = () => {
                   type="text"
                   placeholder="Pretraži domaćinstva..."
                   value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
+                  onChange={e => {
+                    setSearchQuery(e.target.value);
+                    setVisibleCount(25); // Reset to first page on search
+                  }}
                 />
               </div>
             </div>
@@ -212,7 +226,10 @@ const DomacinstvaTPage = () => {
                 <div style={{ width: '230px' }}>
                   <CustomSelect
                     value={location}
-                    onChange={setLocation}
+                    onChange={val => {
+                      setLocation(val);
+                      setVisibleCount(25);
+                    }}
                     options={locationOptions}
                     placeholder="Sve lokacije"
                   />
@@ -226,7 +243,10 @@ const DomacinstvaTPage = () => {
                     value={activeSortLabel}
                     onChange={val => {
                       const s = sortOptions.find(o => o.label === val);
-                      if (s) setSortBy(s.value);
+                      if (s) {
+                        setSortBy(s.value);
+                        setVisibleCount(25);
+                      }
                     }}
                     options={sortOptions}
                     placeholder="Najnovije"
@@ -239,7 +259,10 @@ const DomacinstvaTPage = () => {
                   <input
                     type="checkbox"
                     checked={isOrganicOnly}
-                    onChange={e => setIsOrganicOnly(e.target.checked)}
+                    onChange={e => {
+                      setIsOrganicOnly(e.target.checked);
+                      setVisibleCount(25);
+                    }}
                   />
                   <span className="slider round"></span>
                 </label>
@@ -260,7 +283,7 @@ const DomacinstvaTPage = () => {
 
           {/* Grid */}
           <div className="farms-grid">
-            {filtered.map(farm => (
+            {currentHouseholds.map(farm => (
               <div key={farm.id} className={`farm-card ${farm.isOrganic ? 'organic' : ''}`}>
                 {/* Cover image */}
                 <div className="farm-cover">
@@ -308,6 +331,26 @@ const DomacinstvaTPage = () => {
               </div>
             ))}
           </div>
+
+          {/* Load More */}
+          {hasMore && (
+            <div className="load-more-container">
+              <button
+                className={`load-more-btn ${isLoadingMore ? 'loading' : ''}`}
+                onClick={handleLoadMore}
+                disabled={isLoadingMore}
+              >
+                {isLoadingMore ? (
+                  <>
+                    <span className="spinner"></span>
+                    Učitavanje...
+                  </>
+                ) : (
+                  'Učitaj još'
+                )}
+              </button>
+            </div>
+          )}
         </div>
       </main>
 
@@ -321,4 +364,4 @@ const DomacinstvaTPage = () => {
   );
 };
 
-export default DomacinstvaTPage;
+export default HouseholdsPage;

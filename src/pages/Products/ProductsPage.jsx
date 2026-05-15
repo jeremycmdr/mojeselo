@@ -48,12 +48,16 @@ const ProductsPage = () => {
       <Header onOpenAuth={handleOpenAuth} />
       
       <main className="products-main-content">
-        <div className="products-page-container">
-          <div className="page-header">
-            <h1>Domaći Proizvodi</h1>
-            <p>Otkrijte najbolje iz srca prirode - direktno sa domaćinstava</p>
+        <div className="products-hero">
+          <div className="products-page-container">
+            <div className="hero-content">
+              <h1>Domaći Proizvodi</h1>
+              <p>Otkrijte najbolje iz srca prirode - direktno sa domaćinstava</p>
+            </div>
           </div>
+        </div>
 
+        <div className="products-page-container">
           <div className="products-toolbar">
             <div className="toolbar-left">
               <div className="search-box">
@@ -115,7 +119,12 @@ const ProductsPage = () => {
             {isOrganicOnly && <span className="filter-chip">Organsko <button onClick={() => setIsOrganicOnly(false)}>×</button></span>}
           </div>
 
-          <ProductsList />
+          <ProductsList 
+            searchQuery={searchQuery}
+            category={category}
+            sortBy={sortBy}
+            isOrganicOnly={isOrganicOnly}
+          />
         </div>
       </main>
 

@@ -15,9 +15,9 @@ const Header = ({ onOpenAuth }) => {
           <ul>
             <li><Link to="/domaci-proizvodi">Domaći Proizvodi</Link></li>
             <li><Link to="/domacinstva">Domaćinstva</Link></li>
-            <li><a href="#">Seoski Turizam</a></li>
-            <li><a href="#">Sve Organsko</a></li>
-            <li><a href="#">O Nama</a></li>
+            <li><Link to="/seoski-turizam">Seoski Turizam</Link></li>
+            <li><Link to="/sve-organsko">Sve Organsko</Link></li>
+            <li><Link to="/o-nama">O Nama</Link></li>
           </ul>
         </nav>
         
