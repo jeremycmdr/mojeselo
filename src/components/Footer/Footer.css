@@ -120,10 +120,38 @@
 
 @media (max-width: 768px) {
   .footer-top {
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px 10px;
   }
+  
+  .footer-newsletter {
+    grid-column: 1 / -1;
+    margin-top: 10px;
+  }
+
   .footer-bottom {
     flex-direction: column;
     text-align: center;
+    gap: 30px;
+  }
+
+  .footer-links {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 320px) {
+  .footer-top {
+    gap: 30px 5px;
+  }
+  
+  .footer-column h4 {
+    font-size: 12px;
+  }
+  
+  .footer-column a {
+    font-size: 12px;
   }
 }
