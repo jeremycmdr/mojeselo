@@ -119,7 +119,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
       
       if (mode === 'register') {
         try {
-          const response = await fetch('http://localhost:5000/api/auth/register', {
+          const response = await fetch(`${API_URL}/auth/register`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -154,7 +154,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
         }
       } else if (mode === 'login') {
         try {
-          const response = await fetch('http://localhost:5000/api/auth/login', {
+          const response = await fetch(`${API_URL}/auth/login`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
