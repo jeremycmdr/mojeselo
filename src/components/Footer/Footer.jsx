@@ -39,13 +39,6 @@ const Footer = () => {
           </ul>
         </div>
         
-        <div className="footer-newsletter">
-          <h4>Prijavi se na newsletter</h4>
-          <form className="newsletter-form">
-            <input type="email" placeholder="Prijavi se na..." />
-            <button type="submit" className="newsletter-btn">➤</button>
-          </form>
-        </div>
       </div>
       
       <div className="footer-bottom">
