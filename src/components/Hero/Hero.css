@@ -134,3 +134,21 @@
     font-size: 13px;
   }
 }
+
+@media (max-width: 320px) {
+  .hero-section {
+    padding: 30px 10px;
+    min-height: 280px;
+  }
+  .hero-content h1 {
+    font-size: 26px;
+  }
+  .hero-content p {
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+  .search-btn {
+    font-size: 13px !important;
+    padding: 10px !important;
+  }
+}

@@ -42,3 +42,28 @@
   max-width: 800px;
   margin: 0 auto;
 }
+
+@media (max-width: 480px) {
+  .reliability-section {
+    padding: 30px 20px;
+  }
+  .reliability-title {
+    font-size: 18px;
+    letter-spacing: 1px;
+  }
+  .reliability-title span {
+    padding: 8px 15px;
+  }
+}
+
+@media (max-width: 320px) {
+  .reliability-section {
+    padding: 20px 10px;
+  }
+  .reliability-title {
+    font-size: 16px;
+  }
+  .reliability-text {
+    font-size: 11px;
+  }
+}
