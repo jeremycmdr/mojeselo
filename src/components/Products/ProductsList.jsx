@@ -7,7 +7,7 @@ const products = [
     name: "Šumski med - Domaćinstvo Petrović",
     price: "27,90 KM",
     rating: 5,
-    image: "/honey.png"
+    image: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
   },
   {
     id: 2,
@@ -49,14 +49,14 @@ const products = [
     name: "Rakija Šljivovica (0.7l) - Destilerija Stari Hrast",
     price: "25,00 KM",
     rating: 5,
-    image: "/rakija.png"
+    image: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
   },
   {
     id: 8,
     name: "Domaći pekmez od šljiva - Bakina kuhinja",
     price: "10,00 KM",
     rating: 5,
-    image: "/pekmez.png"
+    image: "https://images.unsplash.com/photo-1589135398302-aa463b399711?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
   },
   {
     id: 9,
@@ -84,14 +84,14 @@ const products = [
     name: "Goveđi pršut - Sušara Mujić",
     price: "35,00 KM",
     rating: 5,
-    image: "/prsut.png"
+    image: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
   }
 ];
 
 const ProductsList = () => {
   return (
     <section className="products-section">
-      <h2 className="section-title">NOVI PROIZVODI</h2>
+      <h2 className="section-title"><span>NOVI PROIZVODI</span></h2>
       <div className="products-grid">
         {products.map(product => (
           <div key={product.id} className="product-card">

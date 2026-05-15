@@ -1,9 +1,30 @@
 .section-title {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-green);
+  font-size: 22px;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1.5px;
+  margin-bottom: 30px;
+}
+
+.section-title span {
+  border: 1px solid var(--border-color);
+  padding: 10px 25px;
+  background-color: var(--white);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  z-index: 1;
+}
+
+.section-title::before,
+.section-title::after {
+  content: "";
+  height: 1px;
+  background-color: var(--border-color);
+  flex: 1;
 }
 
 .products-grid {

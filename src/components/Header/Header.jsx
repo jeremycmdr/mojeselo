@@ -1,7 +1,7 @@
 import React from 'react';
 import './Header.css';
 
-const Header = () => {
+const Header = ({ onOpenAuth }) => {
   return (
     <header className="main-header">
       <div className="header-container">
@@ -21,7 +21,7 @@ const Header = () => {
         </nav>
         
         <div className="header-actions">
-          <button className="login-btn">
+          <button className="login-btn" onClick={() => onOpenAuth('register')}>
             <span className="full-text">Prijavi Domaćinstvo / Prijava</span>
             <span className="short-text">Prijava</span>
           </button>

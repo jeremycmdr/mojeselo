@@ -7,11 +7,19 @@ import ReliabilityText from '../../components/Reliability/ReliabilityText';
 import CategoryList from '../../components/Categories/CategoryList';
 import TourismList from '../../components/Tourism/TourismList';
 import Footer from '../../components/Footer/Footer';
+import AuthModal from '../../components/Auth/AuthModal';
 
 const Home = () => {
+  const [isAuthModalOpen, setIsAuthModalOpen] = React.useState(false);
+  const [authMode, setAuthMode] = React.useState('login');
+
+  const openAuth = (mode = 'login') => {
+    setAuthMode(mode);
+    setIsAuthModalOpen(true);
+  };
   return (
     <div className="home-page">
-      <Header />
+      <Header onOpenAuth={openAuth} />
       
       <main className="home-main-content">
         <div className="left-column">
@@ -43,6 +51,12 @@ const Home = () => {
       </main>
 
       <Footer />
+
+      <AuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={() => setIsAuthModalOpen(false)} 
+        initialMode={authMode}
+      />
     </div>
   );
 };

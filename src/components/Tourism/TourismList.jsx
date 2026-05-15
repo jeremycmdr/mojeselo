@@ -43,7 +43,7 @@ const tourismItems = [
 const TourismList = () => {
   return (
     <section className="tourism-section">
-      <h2 className="sidebar-title" style={{ textAlign: 'center' }}>SEOSKI TURIZAM</h2>
+      <h2 className="sidebar-title"><span>SEOSKI TURIZAM</span></h2>
       <div className="tourism-grid">
         {tourismItems.map(item => (
           <div key={item.id} className="tourism-card">

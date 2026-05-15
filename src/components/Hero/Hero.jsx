@@ -6,7 +6,7 @@ const Hero = () => {
     <section className="hero-section">
       <div className="hero-content">
         <h1>OKUSI PRAVU BOSNU I HERCEGOVINU</h1>
-        <p>Direktna veza sa najboljim seoskim domaćinstvima. Kupujte zdravo, putujte autentično.</p>
+        <p>Vaša prečica do domaće hrane i skrivenih prirodnih lepota.</p>
 
         <div className="search-widget">
           <div className="search-field">

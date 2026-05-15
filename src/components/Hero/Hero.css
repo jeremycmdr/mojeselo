@@ -1,7 +1,7 @@
 .hero-section {
   position: relative;
   height: 400px;
-  background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('/hero_background.png');
+  background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');
   background-size: cover;
   background-position: center;
   display: flex;
@@ -18,17 +18,19 @@
 }
 
 .hero-content h1 {
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 10px;
-  letter-spacing: -0.5px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  font-size: 48px;
+  font-weight: 800;
+  margin-bottom: 15px;
+  letter-spacing: -1px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  line-height: 1.1;
 }
 
 .hero-content p {
-  font-size: 16px;
+  font-size: 20px;
   margin-bottom: 30px;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  font-weight: 400;
 }
 
 .search-widget {
@@ -110,11 +112,12 @@
     padding: 40px 15px;
   }
   .hero-content h1 {
-    font-size: 22px;
+    font-size: 32px;
     line-height: 1.2;
+    margin-bottom: 10px;
   }
   .hero-content p {
-    font-size: 13px;
+    font-size: 15px;
     margin-bottom: 20px;
   }
   .search-widget {
