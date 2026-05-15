@@ -23,6 +23,8 @@
   position: relative;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
   animation: slideUp 0.3s ease;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .close-modal {
@@ -243,10 +245,17 @@
 }
 
 @media (max-width: 500px) {
+  .modal-overlay {
+    padding: 20px 0;
+    align-items: flex-start; /* Start from top so it doesn't cut off if too long */
+    padding-top: 40px;
+  }
+
   .modal-content {
     max-width: 92%;
     padding: 30px 20px;
     border-radius: 15px;
+    max-height: 85vh; /* Slightly less on mobile for safety */
   }
   
   .auth-form h2 {

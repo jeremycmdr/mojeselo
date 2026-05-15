@@ -21,7 +21,7 @@ const Header = ({ onOpenAuth }) => {
         </nav>
         
         <div className="header-actions">
-          <button className="login-btn" onClick={() => onOpenAuth('register')}>
+          <button className="login-btn" onClick={() => onOpenAuth('login')}>
             <span className="full-text">Prijavi Domaćinstvo / Prijava</span>
             <span className="short-text">Prijava</span>
           </button>
