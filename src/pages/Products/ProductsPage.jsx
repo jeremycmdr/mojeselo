@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import API_URL from '../../config';
 import ProductsList from '../../components/Products/ProductsList';
 import Header from '../../components/Header/Header';
@@ -8,6 +9,7 @@ import CustomSelect from '../../components/Common/CustomSelect/CustomSelect';
 import './ProductsPage.css';
 
 const ProductsPage = () => {
+  const location = useLocation();
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState('login');
   const [searchQuery, setSearchQuery] = useState('');
@@ -16,6 +18,15 @@ const ProductsPage = () => {
   const [isOrganicOnly, setIsOrganicOnly] = useState(false);
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState(['Sve']);
+
+  // Handle category from URL query param
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const catParam = params.get('category');
+    if (catParam) {
+      setCategory(catParam);
+    }
+  }, [location.search]);
 
   useEffect(() => {
     const fetchProducts = async () => {

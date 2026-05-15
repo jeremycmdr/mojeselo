@@ -312,7 +312,6 @@ input:checked+.slider:before {
 
 @media (max-width: 600px) {
   .products-main-content {
-    padding-top: 60px;
     padding-bottom: 40px;
   }
 
@@ -384,7 +383,7 @@ input:checked+.slider:before {
 
 @media (max-width: 320px) {
   .products-main-content {
-    padding-top: 55px;
+    padding-top: 0;
   }
 
   .products-page-container {

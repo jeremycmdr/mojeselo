@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import API_URL from '../../config';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
@@ -17,6 +18,7 @@ const getInitials = (name) => {
 };
 
 const ProfilePage = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [userProducts, setUserProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -31,7 +33,7 @@ const ProfilePage = () => {
       setUser(userData);
       fetchUserProducts(userData.id);
     } else {
-      window.location.href = '/';
+      navigate('/');
     }
   }, []);
 

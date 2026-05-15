@@ -229,7 +229,11 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <button className="close-modal" onClick={onClose}>&times;</button>
         
-        {mode !== 'forgot-password' && (
+        {mode === 'forgot-password' ? (
+          <div className="auth-header-standalone">
+            <h3>Reset lozinke</h3>
+          </div>
+        ) : (
           <div className="auth-tabs">
             <button 
               className={`tab-btn ${mode === 'login' ? 'active' : ''}`}
@@ -253,174 +257,192 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
         )}
 
         <div className="auth-form-container">
-          {successMessage && <div className="auth-success-alert">{successMessage}</div>}
-          {errors.server && <div className="auth-error-alert">{errors.server}</div>}
+          {successMessage ? (
+            <div className="auth-success-view">
+              <div className="success-icon-circle">
+                <svg className="success-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                  <circle className="success-checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+                  <path className="success-checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                </svg>
+              </div>
+              <h2 className="success-title">
+                {mode === 'register' ? 'Dobrodošli u selo!' : 'Sve je spremno!'}
+              </h2>
+              <p className="success-text">{successMessage}</p>
+              <div className="success-loader"></div>
+            </div>
+          ) : (
+            <>
+              {errors.server && <div className="auth-error-alert">{errors.server}</div>}
 
-          {mode === 'login' && (
-            <form className="auth-form" key="login" onSubmit={handleSubmit} noValidate>
-              <h2>Dobrodošli nazad</h2>
-              <p>Prijavite se na svoj nalog</p>
-              
-              <div className={`form-group ${errors.email ? 'has-error' : ''}`}>
-                <label>Email adresa</label>
-                <input 
-                  type="email" 
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="npr. petar@email.com" 
-                  maxLength="64"
-                />
-                {errors.email && <span className="error-message">{errors.email}</span>}
-              </div>
-              
-              <div className={`form-group ${errors.password ? 'has-error' : ''}`}>
-                <label>Lozinka</label>
-                <input 
-                  type="password" 
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  placeholder="Vaša lozinka" 
-                  maxLength="64"
-                />
-                {errors.password && <span className="error-message">{errors.password}</span>}
-              </div>
-              
-              <button type="submit" className="submit-btn" disabled={loading}>
-                {loading ? 'Prijava...' : 'Prijavi se'}
-              </button>
-              
-              <div className="auth-footer">
-                <button type="button" className="link-btn" onClick={() => {
-                  setMode('forgot-password');
-                  setErrors({});
-                }}>
-                  Zaboravili ste lozinku?
-                </button>
-              </div>
-            </form>
-          )}
+              {mode === 'login' && (
+                <form className="auth-form" key="login" onSubmit={handleSubmit} noValidate>
+                  <h2>Dobrodošli nazad</h2>
+                  <p>Prijavite se na svoj nalog</p>
+                  
+                  <div className={`form-group ${errors.email ? 'has-error' : ''}`}>
+                    <label>Email adresa</label>
+                    <input 
+                      type="email" 
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      placeholder="npr. petar@email.com" 
+                      maxLength="64"
+                    />
+                    {errors.email && <span className="error-message">{errors.email}</span>}
+                  </div>
+                  
+                  <div className={`form-group ${errors.password ? 'has-error' : ''}`}>
+                    <label>Lozinka</label>
+                    <input 
+                      type="password" 
+                      name="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      placeholder="Vaša lozinka" 
+                      maxLength="64"
+                    />
+                    {errors.password && <span className="error-message">{errors.password}</span>}
+                  </div>
+                  
+                  <button type="submit" className="submit-btn" disabled={loading}>
+                    {loading ? 'Prijava...' : 'Prijavi se'}
+                  </button>
+                  
+                  <div className="auth-footer">
+                    <button type="button" className="link-btn" onClick={() => {
+                      setMode('forgot-password');
+                      setErrors({});
+                    }}>
+                      Zaboravili ste lozinku?
+                    </button>
+                  </div>
+                </form>
+              )}
 
-          {mode === 'forgot-password' && (
-            <form className="auth-form" key="forgot" onSubmit={handleSubmit} noValidate>
-              <h2>Reset lozinke</h2>
-              <p>Unesite svoj email kako bismo vam poslali link za reset lozinke.</p>
-              
-              <div className={`form-group ${errors.email ? 'has-error' : ''}`}>
-                <label>Email adresa</label>
-                <input 
-                  type="email" 
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="npr. petar@email.com" 
-                  maxLength="64"
-                />
-                {errors.email && <span className="error-message">{errors.email}</span>}
-              </div>
-              
-              <button type="submit" className="submit-btn">Pošalji link</button>
-              
-              <div className="auth-footer">
-                <button type="button" className="link-btn" onClick={() => {
-                  setMode('login');
-                  setErrors({});
-                }}>
-                  Nazad na prijavu
-                </button>
-              </div>
-            </form>
-          )}
+              {mode === 'forgot-password' && (
+                <form className="auth-form" key="forgot" onSubmit={handleSubmit} noValidate>
+                  <p>Unesite svoj email kako bismo vam poslali link za reset lozinke.</p>
+                  
+                  <div className={`form-group ${errors.email ? 'has-error' : ''}`}>
+                    <label>Email adresa</label>
+                    <input 
+                      type="email" 
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      placeholder="npr. petar@email.com" 
+                      maxLength="64"
+                    />
+                    {errors.email && <span className="error-message">{errors.email}</span>}
+                  </div>
+                  
+                  <button type="submit" className="submit-btn">Pošalji link</button>
+                  
+                  <div className="auth-footer">
+                    <button type="button" className="link-btn" onClick={() => {
+                      setMode('login');
+                      setErrors({});
+                    }}>
+                      Nazad na prijavu
+                    </button>
+                  </div>
+                </form>
+              )}
 
-          {mode === 'register' && (
-            <form className="auth-form" key="register" onSubmit={handleSubmit} noValidate>
-              <h2>Postanite dio sela</h2>
-              <p>Registrujte svoje domaćinstvo</p>
-              
-              <div className={`form-group ${errors.name ? 'has-error' : ''}`}>
-                <label>Ime i Prezime / Naziv domaćinstva</label>
-                <input 
-                  type="text" 
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  placeholder="npr. Domaćinstvo Petrović" 
-                  maxLength="64"
-                />
-                {errors.name && <span className="error-message">{errors.name}</span>}
-              </div>
-              
-              <div className={`form-group ${errors.email ? 'has-error' : ''}`}>
-                <label>Email adresa</label>
-                <input 
-                  type="email" 
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="npr. petar@email.com" 
-                  maxLength="64"
-                />
-                {errors.email && <span className="error-message">{errors.email}</span>}
-              </div>
-              
-              <div className={`form-group ${errors.password ? 'has-error' : ''}`}>
-                <label>Lozinka</label>
-                <input 
-                  type="password" 
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  placeholder="Unesite lozinku" 
-                  maxLength="64"
-                />
-                <div className="password-requirements">
-                  {[
-                    { id: 1, label: 'Najmanje 8 karaktera', met: formData.password.length >= 8 },
-                    { id: 2, label: 'Jedno veliko slovo', met: /[A-Z]/.test(formData.password) },
-                    { id: 3, label: 'Jedan broj', met: /[0-9]/.test(formData.password) },
-                    { id: 4, label: 'Specijalni karakter (!@#$)', met: /[!@#$%^&*(),.?":{}|<>]/.test(formData.password) },
-                  ].map(req => (
-                    <div key={req.id} className={`requirement ${req.met ? 'met' : 'unmet'}`}>
-                      <span className="req-icon">{req.met ? '✓' : '○'}</span>
-                      {req.label}
+              {mode === 'register' && (
+                <form className="auth-form" key="register" onSubmit={handleSubmit} noValidate>
+                  <h2>Postanite dio sela</h2>
+                  <p>Registrujte svoje domaćinstvo</p>
+                  
+                  <div className={`form-group ${errors.name ? 'has-error' : ''}`}>
+                    <label>Ime i Prezime / Naziv domaćinstva</label>
+                    <input 
+                      type="text" 
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      placeholder="npr. Domaćinstvo Petrović" 
+                      maxLength="64"
+                    />
+                    {errors.name && <span className="error-message">{errors.name}</span>}
+                  </div>
+                  
+                  <div className={`form-group ${errors.email ? 'has-error' : ''}`}>
+                    <label>Email adresa</label>
+                    <input 
+                      type="email" 
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      placeholder="npr. petar@email.com" 
+                      maxLength="64"
+                    />
+                    {errors.email && <span className="error-message">{errors.email}</span>}
+                  </div>
+                  
+                  <div className={`form-group ${errors.password ? 'has-error' : ''}`}>
+                    <label>Lozinka</label>
+                    <input 
+                      type="password" 
+                      name="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      placeholder="Unesite lozinku" 
+                      maxLength="64"
+                    />
+                    <div className="password-requirements">
+                      {[
+                        { id: 1, label: 'Najmanje 8 karaktera', met: formData.password.length >= 8 },
+                        { id: 2, label: 'Jedno veliko slovo', met: /[A-Z]/.test(formData.password) },
+                        { id: 3, label: 'Jedan broj', met: /[0-9]/.test(formData.password) },
+                        { id: 4, label: 'Specijalni karakter (!@#$)', met: /[!@#$%^&*(),.?":{}|<>]/.test(formData.password) },
+                      ].map(req => (
+                        <div key={req.id} className={`requirement ${req.met ? 'met' : 'unmet'}`}>
+                          <span className="req-icon">{req.met ? '✓' : '○'}</span>
+                          {req.label}
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-                {errors.password && <span className="error-message">{errors.password}</span>}
-              </div>
+                    {errors.password && <span className="error-message">{errors.password}</span>}
+                  </div>
 
-              <div className={`form-group ${errors.confirmPassword ? 'has-error' : ''}`}>
-                <label>Potvrdi lozinku</label>
-                <input 
-                  type="password" 
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleInputChange}
-                  placeholder="Ponovite lozinku" 
-                  maxLength="64"
-                />
-                {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
-              </div>
+                  <div className={`form-group ${errors.confirmPassword ? 'has-error' : ''}`}>
+                    <label>Potvrdi lozinku</label>
+                    <input 
+                      type="password" 
+                      name="confirmPassword"
+                      value={formData.confirmPassword}
+                      onChange={handleInputChange}
+                      placeholder="Ponovite lozinku" 
+                      maxLength="64"
+                    />
+                    {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
+                  </div>
 
-              <div className={`form-group ${errors.location ? 'has-error' : ''}`}>
-                <label>Grad / Lokacija</label>
-                <CustomSelect 
-                  value={formData.location}
-                  onChange={(val) => handleInputChange({ target: { name: 'location', value: val } })}
-                  options={locations}
-                  placeholder="Izaberite lokaciju..."
-                  hasError={!!errors.location}
-                />
-                {errors.location && <span className="error-message">{errors.location}</span>}
-              </div>
-              
-              <button type="submit" className="submit-btn" disabled={loading}>
-                {loading ? 'Registracija...' : 'Započni registraciju'}
-              </button>
-            </form>
+                  <div className={`form-group ${errors.location ? 'has-error' : ''}`}>
+                    <label>Grad / Lokacija</label>
+                    <CustomSelect 
+                      value={formData.location}
+                      onChange={(val) => handleInputChange({ target: { name: 'location', value: val } })}
+                      options={locations}
+                      placeholder="Izaberite lokaciju..."
+                      hasError={!!errors.location}
+                      openUpward={window.innerWidth <= 480}
+                    />
+                    {errors.location && <span className="error-message">{errors.location}</span>}
+                  </div>
+                  
+                  <button type="submit" className="submit-btn" disabled={loading}>
+                    {loading ? 'Registracija...' : 'Započni registraciju'}
+                  </button>
+                </form>
+              )}
+            </>
           )}
         </div>
+
       </div>
     </div>
   );

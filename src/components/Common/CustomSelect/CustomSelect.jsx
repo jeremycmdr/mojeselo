@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import './CustomSelect.css';
 
-const CustomSelect = ({ value, onChange, options, placeholder, hasError }) => {
+const CustomSelect = ({ value, onChange, options, placeholder, hasError, openUpward }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0, width: 0 });
   const triggerRef = useRef(null);
@@ -19,11 +19,24 @@ const CustomSelect = ({ value, onChange, options, placeholder, hasError }) => {
     const updatePosition = () => {
       if (triggerRef.current && isOpen) {
         const rect = triggerRef.current.getBoundingClientRect();
-        setDropdownPos({
-          top: rect.bottom + window.scrollY,
-          left: rect.left + window.scrollX,
-          width: rect.width
-        });
+        
+        if (openUpward) {
+          // Pozicioniranje iznad tastera
+          setDropdownPos({
+            bottom: (window.innerHeight - rect.top) + window.scrollY,
+            left: rect.left + window.scrollX,
+            width: rect.width,
+            isUp: true
+          });
+        } else {
+          // Standardno pozicioniranje ispod tastera
+          setDropdownPos({
+            top: rect.bottom + window.scrollY,
+            left: rect.left + window.scrollX,
+            width: rect.width,
+            isUp: false
+          });
+        }
       }
     };
 
@@ -39,7 +52,7 @@ const CustomSelect = ({ value, onChange, options, placeholder, hasError }) => {
       window.removeEventListener('resize', updatePosition);
       window.removeEventListener('scroll', updatePosition, true);
     };
-  }, [isOpen]);
+  }, [isOpen, openUpward]);
 
   const handleSelect = (optionValue) => {
     onChange(optionValue);
@@ -106,7 +119,7 @@ const CustomSelect = ({ value, onChange, options, placeholder, hasError }) => {
       <button 
         ref={triggerRef}
         type="button"
-        className={`custom-select-trigger ${isOpen ? 'active' : ''}`}
+        className={`custom-select-trigger ${isOpen ? 'active' : ''} ${openUpward ? 'upward' : ''}`}
         onClick={() => setIsOpen(!isOpen)}
       >
         <span className="selected-value">{getSelectedLabel()}</span>
@@ -115,11 +128,12 @@ const CustomSelect = ({ value, onChange, options, placeholder, hasError }) => {
 
       {isOpen && createPortal(
         <div 
-          className="custom-options-dropdown" 
+          className={`custom-options-dropdown ${dropdownPos.isUp ? 'is-upward' : ''}`} 
           ref={dropdownRef}
           style={{
             position: 'absolute',
-            top: `${dropdownPos.top}px`,
+            top: dropdownPos.isUp ? 'auto' : `${dropdownPos.top}px`,
+            bottom: dropdownPos.isUp ? `${dropdownPos.bottom}px` : 'auto',
             left: `${dropdownPos.left}px`,
             width: `${dropdownPos.width}px`,
             zIndex: 9999

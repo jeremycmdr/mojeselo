@@ -546,7 +546,7 @@ input:checked+.slider:before {
 
 @media (max-width: 600px) {
   .domacinstva-main {
-    padding-top: 60px;
+    padding-top: 0;
   }
 
   .domacinstva-container {

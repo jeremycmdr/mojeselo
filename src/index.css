@@ -1,8 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap');
 
 :root {
-  --bg-color: #fcfbfa; /* Slightly textured look via color, or we can use background pattern */
-  --bg-secondary: #f4f1e5; /* The beige background used in right sidebar and sections */
+  --bg-color: #fcfbfa;
+  /* Slightly textured look via color, or we can use background pattern */
+  --bg-secondary: #f4f1e5;
+  /* The beige background used in right sidebar and sections */
   --text-primary: #2d2d2d;
   --text-secondary: #666;
   --primary-green: #52753a;
@@ -22,6 +24,7 @@
 
 html {
   scrollbar-gutter: stable;
+  overflow-x: hidden;
 }
 
 body {
@@ -29,6 +32,8 @@ body {
   background-color: var(--bg-color);
   color: var(--text-primary);
   line-height: 1.5;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 a {
@@ -92,6 +97,7 @@ ul {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 .main-content {
@@ -102,4 +108,11 @@ ul {
 * {
   scrollbar-width: thin;
   scrollbar-color: #d1ccba transparent;
+}
+
+/* Fix for mobile toolbar covering content */
+@media (max-width: 480px) {
+  .site-wrapper {
+    padding-bottom: 70px;
+  }
 }

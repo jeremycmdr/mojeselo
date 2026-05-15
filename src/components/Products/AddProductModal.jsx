@@ -6,14 +6,22 @@ import '../Auth/AuthModal.css'; // Ponovo koristimo iste stilove za konzistentno
 import './AddProductModal.css';
 
 const AddProductModal = ({ isOpen, onClose, onProductAdded, product }) => {
+  const [activeTab, setActiveTab] = useState('product');
   const [categories, setCategories] = useState([]);
-  const [formData, setFormData] = React.useState({
+  const [formData, setFormData] = useState({
     name: '',
     price: '',
     category: '',
     image: '',
     description: '',
     isOrganic: false
+  });
+  const [tourismData, setTourismData] = useState({
+    title: '',
+    description: '',
+    image: '',
+    price: '',
+    location: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -24,7 +32,6 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded, product }) => {
         const response = await fetch(`${API_URL}/categories`);
         const data = await response.json();
         if (data.success) {
-          // Mapiramo kategorije u format koji CustomSelect razume (ID kao vrednost, Ime kao labela)
           setCategories(data.data.map(cat => ({
             value: cat.id,
             label: cat.name
@@ -37,53 +44,39 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded, product }) => {
     fetchCategories();
   }, []);
 
-  // Handle Escape key
+  // Reset/Populate form
   useEffect(() => {
-    const handleEscape = (e) => {
-      if (e.key === 'Escape') onClose();
-    };
     if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-    }
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [isOpen, onClose]);
-
-  // Popunjavamo formu ako je prosleđen proizvod (Edit mode)
-  React.useEffect(() => {
-    if (product) {
-      // Ako imamo ime kategorije umesto ID-a (stari podaci), pokušavamo da nađemo ID
-      let categoryVal = product.category;
-      if (isNaN(categoryVal) && categories.length > 0) {
-        const found = categories.find(c => c.label === categoryVal);
-        if (found) categoryVal = found.value;
+      setError('');
+      if (product) {
+        setActiveTab('product');
+        let categoryVal = product.category;
+        if (isNaN(categoryVal) && categories.length > 0) {
+          const found = categories.find(c => c.label === categoryVal);
+          if (found) categoryVal = found.value;
+        }
+        setFormData({
+          name: product.name || '',
+          price: product.price || '',
+          category: categoryVal || '',
+          image: product.image || '',
+          description: product.description || '',
+          isOrganic: !!product.isOrganic
+        });
+      } else {
+        setFormData({ name: '', price: '', category: '', image: '', description: '', isOrganic: false });
+        setTourismData({ title: '', description: '', image: '', price: '', location: '' });
       }
-
-      setFormData({
-        name: product.name || '',
-        price: product.price || '',
-        category: categoryVal || '',
-        image: product.image || '',
-        description: product.description || '',
-        isOrganic: !!product.isOrganic
-      });
-    } else {
-      setFormData({
-        name: '',
-        price: '',
-        category: '',
-        image: '',
-        description: '',
-        isOrganic: false
-      });
     }
-  }, [product, isOpen, categories]);
+  }, [isOpen, product, categories]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+    if (activeTab === 'product') {
+      setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+    } else {
+      setTourismData(prev => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -95,18 +88,18 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded, product }) => {
     const token = localStorage.getItem('token');
     
     try {
-      const url = product 
-        ? `${API_URL}/products/${product.id}` 
-        : `${API_URL}/products`;
+      const isProduct = activeTab === 'product';
+      const endpoint = isProduct ? 'products' : 'tourism';
       
-      const method = product ? 'PUT' : 'POST';
+      const url = product && isProduct
+        ? `${API_URL}/${endpoint}/${product.id}` 
+        : `${API_URL}/${endpoint}`;
+      
+      const method = product && isProduct ? 'PUT' : 'POST';
 
-      const body = {
-        ...formData,
-        user_id: savedUser.id
-      };
-
-      console.log('📦 Šaljem podatke serveru:', body);
+      const body = isProduct 
+        ? { ...formData, user_id: savedUser.id }
+        : { ...tourismData, household_id: savedUser.id };
 
       const response = await fetch(url, {
         method,
@@ -145,86 +138,93 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded, product }) => {
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <button className="close-modal" onClick={onClose}>&times;</button>
         
+        {/* TABS */}
+        <div className="auth-tabs">
+          <button 
+            className={`tab-btn ${activeTab === 'product' ? 'active' : ''}`}
+            onClick={() => setActiveTab('product')}
+          >
+            Dodaj Proizvod
+          </button>
+          <button 
+            className={`tab-btn ${activeTab === 'tourism' ? 'active' : ''}`}
+            onClick={() => setActiveTab('tourism')}
+          >
+            Seoski Turizam
+          </button>
+        </div>
+
         <div className="auth-form-container">
           <form className="auth-form" onSubmit={handleSubmit}>
-            <h2>{product ? 'Izmjeni proizvod' : 'Dodaj novi proizvod'}</h2>
-            <p>{product ? 'Ažurirajte detalje vašeg proizvoda' : 'Unesite detalje vašeg domaćeg proizvoda'}</p>
+            {activeTab === 'product' ? (
+              <>
+                <h2>{product ? 'Izmjeni proizvod' : 'Novi proizvod'}</h2>
+                <p>Unesite detalje vašeg domaćeg proizvoda</p>
+                {error && <div className="auth-error-alert">{error}</div>}
+                
+                <div className="form-group">
+                  <label>Naziv proizvoda</label>
+                  <input type="text" name="name" value={formData.name} onChange={handleInputChange} placeholder="npr. Domaći Ajvar 720g" required />
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Cijena (KM)</label>
+                    <input type="number" name="price" value={formData.price} onChange={handleInputChange} placeholder="0.00" step="0.01" required />
+                  </div>
+                  <div className="form-group">
+                    <label>Kategorija</label>
+                    <CustomSelect options={categories} value={formData.category} onChange={(val) => setFormData(prev => ({ ...prev, category: val }))} placeholder="Izaberi..." />
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label>Link do slike (URL)</label>
+                  <input type="text" name="image" value={formData.image} onChange={handleInputChange} placeholder="https://images.unsplash.com/..." />
+                </div>
+                <div className="form-group">
+                  <label>Opis proizvoda</label>
+                  <textarea name="description" value={formData.description} onChange={handleInputChange} placeholder="Kratak opis..." rows="3"></textarea>
+                </div>
+                <div className="organic-toggle-container">
+                  <label className="switch">
+                    <input type="checkbox" name="isOrganic" checked={formData.isOrganic} onChange={handleInputChange} />
+                    <span className="slider round"></span>
+                  </label>
+                  <span className="toggle-label">Organski proizvod</span>
+                </div>
+              </>
+            ) : (
+              <>
+                <h2>Novi oglas za turizam</h2>
+                <p>Ponudite smještaj ili iskustvo na vašem imanju</p>
+                {error && <div className="auth-error-alert">{error}</div>}
 
-            {error && <div className="auth-error-alert">{error}</div>}
-
-            <div className="form-group">
-              <label>Naziv proizvoda</label>
-              <input 
-                type="text" 
-                name="name" 
-                value={formData.name} 
-                onChange={handleInputChange} 
-                placeholder="npr. Domaći Ajvar 720g" 
-                required 
-              />
-            </div>
-
-            <div className="form-row">
-              <div className="form-group">
-                <label>Cijena (KM)</label>
-                <input 
-                  type="number" 
-                  name="price" 
-                  value={formData.price} 
-                  onChange={handleInputChange} 
-                  placeholder="0.00" 
-                  step="0.01" 
-                  required 
-                />
-              </div>
-              <div className="form-group">
-                <label>Kategorija</label>
-                <CustomSelect 
-                  options={categories} 
-                  value={formData.category} 
-                  onChange={(val) => setFormData(prev => ({ ...prev, category: val }))} 
-                  placeholder="Izaberi..."
-                />
-              </div>
-            </div>
-
-            <div className="form-group">
-              <label>Link do slike (URL)</label>
-              <input 
-                type="text" 
-                name="image" 
-                value={formData.image} 
-                onChange={handleInputChange} 
-                placeholder="https://images.unsplash.com/..." 
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Opis proizvoda</label>
-              <textarea 
-                name="description" 
-                value={formData.description} 
-                onChange={handleInputChange} 
-                placeholder="Kratak opis vašeg proizvoda..."
-                rows="3"
-              ></textarea>
-            </div>
-
-            <div className="organic-toggle-container">
-              <label className="switch">
-                <input 
-                  type="checkbox" 
-                  name="isOrganic" 
-                  checked={formData.isOrganic} 
-                  onChange={handleInputChange} 
-                />
-                <span className="slider round"></span>
-              </label>
-              <span className="toggle-label">Ovo je organski proizvod</span>
-            </div>
+                <div className="form-group">
+                  <label>Naziv oglasa</label>
+                  <input type="text" name="title" value={tourismData.title} onChange={handleInputChange} placeholder="npr. Planinska brvnara sa pogledom" required />
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Cijena noćenja (KM)</label>
+                    <input type="number" name="price" value={tourismData.price} onChange={handleInputChange} placeholder="0.00" step="0.01" required />
+                  </div>
+                  <div className="form-group">
+                    <label>Lokacija</label>
+                    <input type="text" name="location" value={tourismData.location} onChange={handleInputChange} placeholder="npr. Bjelašnica, Babin Do" required />
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label>Link do slike (URL)</label>
+                  <input type="text" name="image" value={tourismData.image} onChange={handleInputChange} placeholder="https://images.unsplash.com/..." />
+                </div>
+                <div className="form-group">
+                  <label>Opis smještaja / ponude</label>
+                  <textarea name="description" value={tourismData.description} onChange={handleInputChange} placeholder="Opišite šta nudite gostima..." rows="4"></textarea>
+                </div>
+              </>
+            )}
 
             <button type="submit" className="submit-btn" disabled={loading}>
-              {loading ? 'Slanje...' : (product ? 'Sačuvaj izmjene' : 'Objavi proizvod')}
+              {loading ? 'Slanje...' : 'Objavi oglas'}
             </button>
           </form>
         </div>

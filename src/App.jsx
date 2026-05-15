@@ -8,18 +8,22 @@ import OrganicPage from './pages/Organic/OrganicPage'
 import AboutPage from './pages/About/AboutPage'
 import ProfilePage from './pages/Profile/ProfilePage'
 import API_URL from './config'
+import MobileToolbar from './components/Navigation/MobileToolbar'
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/domaci-proizvodi" element={<ProductsPage />} />
-      <Route path="/domacinstva" element={<HouseholdsPage />} />
-      <Route path="/seoski-turizam" element={<TourismPage />} />
-      <Route path="/sve-organsko" element={<OrganicPage />} />
-      <Route path="/o-nama" element={<AboutPage />} />
-      <Route path="/profil" element={<ProfilePage />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/domaci-proizvodi" element={<ProductsPage />} />
+        <Route path="/domacinstva" element={<HouseholdsPage />} />
+        <Route path="/seoski-turizam" element={<TourismPage />} />
+        <Route path="/sve-organsko" element={<OrganicPage />} />
+        <Route path="/o-nama" element={<AboutPage />} />
+        <Route path="/profil" element={<ProfilePage />} />
+      </Routes>
+      <MobileToolbar />
+    </>
   )
 }
 

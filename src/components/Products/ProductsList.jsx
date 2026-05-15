@@ -60,7 +60,14 @@ const ProductsList = ({ title, searchQuery = '', category = 'Sve', sortBy = 'Naj
             {currentProducts.map(product => (
               <div key={product.id} className={`product-card ${product.isOrganic ? 'organic' : ''}`}>
                 <div className="product-image-container">
-                  <img src={product.image} alt={product.name} />
+                  {product.image ? (
+                    <img src={product.image} alt={product.name} />
+                  ) : (
+                    <div className="product-image-placeholder">
+                      <div className="product-placeholder-pattern"></div>
+                      <span className="product-placeholder-icon">🌿</span>
+                    </div>
+                  )}
                   {product.isOrganic && (
                     <div className="organic-label">
                       <svg viewBox="0 0 24 24" className="leaf-icon">

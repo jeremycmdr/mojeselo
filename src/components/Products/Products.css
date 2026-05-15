@@ -187,6 +187,37 @@
   object-fit: cover;
 }
 
+.product-image-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #f9fbf7 0%, #f0f4eb 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.product-placeholder-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.05;
+  background-image: radial-gradient(var(--primary-green) 0.5px, transparent 0.5px);
+  background-size: 10px 10px;
+}
+
+.product-placeholder-icon {
+  font-size: 40px;
+  margin-bottom: 5px;
+  z-index: 1;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+
 .product-info {
   padding: 15px;
   display: flex;

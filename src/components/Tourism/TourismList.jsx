@@ -1,46 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import './Tourism.css';
 
-const tourismItems = [
-  {
-    id: 1,
-    title: "Planinska brvnara - Bjelašnica",
-    rating: 5,
-    image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80"
-  },
-  {
-    id: 2,
-    title: "Vikendica pored rijeke - Una",
-    rating: 5,
-    image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80"
-  },
-  {
-    id: 3,
-    title: "Kamena kuća - Blagaj",
-    rating: 5,
-    image: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80"
-  },
-  {
-    id: 4,
-    title: "Brvnara na jezeru - Rama",
-    rating: 5,
-    image: "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80"
-  },
-  {
-    id: 5,
-    title: "Apartman u prirodi - Jahorina",
-    rating: 5,
-    image: "https://images.unsplash.com/photo-1542718610-a1d656d1884c?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80"
-  },
-  {
-    id: 6,
-    title: "Seosko imanje - Trebinje",
-    rating: 5,
-    image: "https://images.unsplash.com/photo-1510798831971-661eb04b3739?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80"
-  }
-];
-
 const TourismList = () => {
+  const [tourismItems, setTourismItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTourism = async () => {
+      try {
+        const response = await fetch(`${API_URL}/tourism`);
+        const result = await response.json();
+        if (result.success) {
+          // Uzimamo samo prvih 6 za prikaz na početnoj
+          setTourismItems(result.data.slice(0, 6));
+        }
+      } catch (error) {
+        console.error("Greška pri učitavanju turizma:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTourism();
+  }, []);
+
+  if (loading) return <div className="tourism-loading">Učitavanje...</div>;
+  if (tourismItems.length === 0) return null;
+
   return (
     <section className="tourism-section">
       <h2 className="sidebar-title"><span>SEOSKI TURIZAM</span></h2>
@@ -48,15 +34,22 @@ const TourismList = () => {
         {tourismItems.map(item => (
           <div key={item.id} className="tourism-card">
             <div className="tourism-img">
-              <img src={item.image} alt={item.title} />
+              {item.image ? (
+                <img src={item.image} alt={item.title} />
+              ) : (
+                <div className="tourism-placeholder">
+                  <span className="placeholder-icon">🏡</span>
+                </div>
+              )}
             </div>
             <div className="tourism-info">
               <h4>{item.title}</h4>
               <div className="tourism-rating">
-                {[...Array(item.rating)].map((_, i) => (
+                {[...Array(Math.round(item.rating || 5))].map((_, i) => (
                   <span key={i} className="star">★</span>
                 ))}
               </div>
+              <p className="tourism-location">{item.location}</p>
             </div>
           </div>
         ))}
