@@ -132,6 +132,137 @@
   color: white;
 }
 
+/* Tabs */
+.profile-tabs-container {
+  margin-bottom: 30px;
+}
+
+.profile-tabs {
+  display: flex;
+  gap: 10px;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.profile-tab {
+  background: none;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #6c757d;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.profile-tab span {
+  font-weight: 500;
+  opacity: 0.7;
+  font-size: 14px;
+}
+
+.profile-tab.active {
+  color: var(--primary-green);
+}
+
+.profile-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--primary-green);
+}
+
+/* Empty State */
+.empty-profile-state {
+  background: white;
+  padding: 60px;
+  border-radius: 16px;
+  text-align: center;
+  color: #666;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+}
+
+/* Tourism Grid */
+.profile-tourism-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+}
+
+.profile-item-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.item-img {
+  height: 180px;
+}
+
+.item-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.item-info {
+  padding: 20px;
+  flex: 1;
+}
+
+.item-info h3 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+}
+
+.item-meta {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.item-price {
+  font-weight: 800;
+  color: var(--primary-green);
+  font-size: 18px;
+}
+
+.item-actions {
+  display: flex;
+  border-top: 1px solid #f1f3f5;
+}
+
+.item-actions button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.item-actions .edit-btn {
+  color: #495057;
+  border-right: 1px solid #f1f3f5;
+}
+
+.item-actions .delete-btn {
+  color: #dc3545;
+}
+
+.item-actions button:hover {
+  background: #f8f9fa;
+}
+
 @media (max-width: 768px) {
   .profile-header {
     flex-direction: column;
@@ -141,5 +272,8 @@
   .profile-info-card {
     flex-direction: column;
     gap: 15px;
+  }
+  .profile-tabs {
+    overflow-x: auto;
   }
 }

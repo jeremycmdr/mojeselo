@@ -6,25 +6,6 @@ import AuthModal from '../../components/Auth/AuthModal';
 import CustomSelect from '../../components/Common/CustomSelect/CustomSelect';
 import './HouseholdsPage.css';
 
-const locationOptions = [
-  'Sve lokacije',
-  {
-    label: 'Federacija BiH', options: [
-      'Unsko-sanski kanton', 'Posavski kanton', 'Tuzlanski kanton',
-      'Zeničko-dobojski kanton', 'Bosansko-podrinjski kanton',
-      'Srednjobosanski kanton', 'Hercegovačko-neretvanski kanton',
-      'Zapadnohercegovački kanton', 'Kanton Sarajevo', 'Kanton 10'
-    ]
-  },
-  {
-    label: 'Republika Srpska', options: [
-      'Regija Prijedor', 'Regija Bijeljina', 'Regija Trebinje',
-      'Regija Doboj', 'Regija Banja Luka', 'Regija Istočno Sarajevo'
-    ]
-  },
-  { label: 'Ostalo', options: ['Brčko Distrikt'] }
-];
-
 const sortOptions = [
   { label: 'Najnovije', value: 'najnovije' },
   { label: 'Najbolje ocijenjeno', value: 'ocjena' },
@@ -54,6 +35,7 @@ const HouseholdsPage = () => {
   const [authMode, setAuthMode] = useState('login');
   const [searchQuery, setSearchQuery] = useState('');
   const [location, setLocation] = useState('Sve lokacije');
+  const [locationOptions, setLocationOptions] = useState(['Sve lokacije']);
   const [sortBy, setSortBy] = useState('najnovije');
   const [visibleCount, setVisibleCount] = useState(25);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -61,20 +43,32 @@ const HouseholdsPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchHouseholds = async () => {
+    const fetchInitialData = async () => {
       try {
-        const response = await fetch(`${API_URL}/households`);
-        const data = await response.json();
-        if (data.success) {
-          setDomacinstva(data.data);
+        setLoading(true);
+        // Fetch locations and households in parallel
+        const [householdsRes, locationsRes] = await Promise.all([
+          fetch(`${API_URL}/households`),
+          fetch(`${API_URL}/locations`)
+        ]);
+
+        const householdsResult = await householdsRes.json();
+        const locationsResult = await locationsRes.json();
+
+        if (householdsResult.success) {
+          setDomacinstva(householdsResult.data);
+        }
+        if (locationsResult.success) {
+          setLocationOptions(['Sve lokacije', ...locationsResult.data]);
         }
       } catch (error) {
-        console.error("Greška pri učitavanju domaćinstava:", error);
+        console.error("Greška pri učitavanju podataka:", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchHouseholds();
+
+    fetchInitialData();
   }, []);
 
   const handleOpenAuth = (mode) => {

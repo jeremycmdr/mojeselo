@@ -223,6 +223,15 @@
   color: #777;
 }
 
+.card-category {
+  font-size: 13px;
+  font-weight: 600;
+  color: #777;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .card-rating {
   display: flex;
   align-items: center;

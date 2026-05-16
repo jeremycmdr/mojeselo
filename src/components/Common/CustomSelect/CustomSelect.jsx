@@ -67,15 +67,19 @@ const CustomSelect = ({ value, onChange, options, placeholder, hasError, openUpw
         return (
           <div key={item.label || index} className="optgroup-container">
             <div className="optgroup-label">{item.label}</div>
-            {item.options.map((opt) => (
-              <div 
-                key={opt}
-                className={`custom-option ${value === opt ? 'selected' : ''}`}
-                onClick={() => handleSelect(opt)}
-              >
-                {opt}
-              </div>
-            ))}
+            {item.options.map((opt, optIndex) => {
+              const optValue = typeof opt === 'object' ? opt.value : opt;
+              const optLabel = typeof opt === 'object' ? opt.label : opt;
+              return (
+                <div 
+                  key={optValue || optIndex}
+                  className={`custom-option ${value === optValue ? 'selected' : ''}`}
+                  onClick={() => handleSelect(optValue)}
+                >
+                  {optLabel}
+                </div>
+              );
+            })}
           </div>
         );
       } else {

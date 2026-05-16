@@ -44,12 +44,13 @@ const TourismList = () => {
             </div>
             <div className="tourism-info">
               <h4>{item.title}</h4>
-              <div className="tourism-rating">
-                {[...Array(Math.round(item.rating || 5))].map((_, i) => (
-                  <span key={i} className="star">★</span>
-                ))}
+              <div className="tourism-meta">
+                {item.category && <span className="tourism-cat">🏷️ {item.category}</span>}
+                <span className="tourism-loc">📍 {item.location_name}</span>
               </div>
-              <p className="tourism-location">{item.location}</p>
+              <p className="tourism-price">
+                {item.price ? `${item.price} KM` : 'Po dogovoru'}
+              </p>
             </div>
           </div>
         ))}

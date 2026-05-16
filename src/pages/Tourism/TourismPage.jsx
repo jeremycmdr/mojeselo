@@ -3,58 +3,23 @@ import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import AuthModal from '../../components/Auth/AuthModal';
 import CustomSelect from '../../components/Common/CustomSelect/CustomSelect';
+import API_URL from '../../config';
 import './TourismPage.css';
-
-const locationOptions = [
-  'Sve lokacije',
-  {
-    label: 'Federacija BiH', options: [
-      'Unsko-sanski kanton', 'Posavski kanton', 'Tuzlanski kanton',
-      'Zeničko-dobojski kanton', 'Bosansko-podrinjski kanton',
-      'Srednjobosanski kanton', 'Hercegovačko-neretvanski kanton',
-      'Zapadnohercegovački kanton', 'Kanton Sarajevo', 'Kanton 10'
-    ]
-  },
-  {
-    label: 'Republika Srpska', options: [
-      'Regija Prijedor', 'Regija Bijeljina', 'Regija Trebinje',
-      'Regija Doboj', 'Regija Banja Luka', 'Regija Istočno Sarajevo'
-    ]
-  },
-  { label: 'Ostalo', options: ['Brčko Distrikt'] }
-];
-
-const categoryOptions = [
-  'Sve kategorije',
-  'Planina',
-  'Voda (Rijeka/Jezero)',
-  'Eko-selo',
-  'Ranč i Farma',
-  'Smeštaj',
-  'Hrana i Aktivnosti'
-];
 
 const sortOptions = [
   { label: 'Najpopularnije', value: 'popularno' },
   { label: 'Cena: Niža ka višoj', value: 'cena-niza' },
-  { label: 'Cena: Viša ka nižoj', value: 'cena-visa' },
-  { label: 'Najbolje ocijenjeno', value: 'ocjena' }
+  { label: 'Cena: Viša ka nižoj', value: 'cena-visa' }
 ];
-
-const StarRating = ({ rating }) => (
-  <div className="tourism-stars">
-    {[...Array(5)].map((_, i) => (
-      <span key={i} className={`star ${i >= (rating || 5) ? 'empty' : ''}`}>★</span>
-    ))}
-  </div>
-);
 
 const TourismPage = () => {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState('login');
   const [searchQuery, setSearchQuery] = useState('');
   const [location, setLocation] = useState('Sve lokacije');
+  const [locationOptions, setLocationOptions] = useState(['Sve lokacije']);
   const [category, setCategory] = useState('Sve kategorije');
+  const [categoryOptions, setCategoryOptions] = useState(['Sve kategorije']);
   const [sortBy, setSortBy] = useState('popularno');
   const [visibleCount, setVisibleCount] = useState(12);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -62,20 +27,38 @@ const TourismPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchTourism = async () => {
+    const fetchInitialData = async () => {
       try {
-        const response = await fetch(`${API_URL}/tourism`);
-        const result = await response.json();
-        if (result.success) {
-          setTourismData(result.data);
+        setLoading(true);
+        // Fetch locations, categories and tourism in parallel
+        const [tourismRes, locationsRes, categoriesRes] = await Promise.all([
+          fetch(`${API_URL}/tourism`),
+          fetch(`${API_URL}/locations`),
+          fetch(`${API_URL}/tourism-categories`)
+        ]);
+
+        const tourismResult = await tourismRes.json();
+        const locationsResult = await locationsRes.json();
+        const categoriesResult = await categoriesRes.json();
+
+        if (tourismResult.success) {
+          setTourismData(tourismResult.data);
+        }
+        if (locationsResult.success) {
+          setLocationOptions(['Sve lokacije', ...locationsResult.data]);
+        }
+        if (categoriesResult.success) {
+          const names = categoriesResult.data.map(cat => cat.name);
+          setCategoryOptions(['Sve kategorije', ...names]);
         }
       } catch (error) {
-        console.error("Greška pri preuzimanju turizma:", error);
+        console.error("Greška pri učitavanju podataka:", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchTourism();
+
+    fetchInitialData();
   }, []);
 
   const handleOpenAuth = (mode) => {
@@ -96,8 +79,8 @@ const TourismPage = () => {
   const filtered = tourismData.filter(item => {
     if (searchQuery && !item.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
       !item.description.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-    if (location !== 'Sve lokacije' && item.location !== location) return false;
-    // Mapiranje kategorija ako bude potrebno, za sada filtriramo po naslovu ili opisu ako je "Sve"
+    if (location !== 'Sve lokacije' && item.location_id !== location) return false;
+    if (category !== 'Sve kategorije' && item.category !== category) return false;
     return true;
   });
 
@@ -209,15 +192,15 @@ const TourismPage = () => {
                       <span className="placeholder-icon">🏡</span>
                     </div>
                   )}
-                  <span className="price-tag">{item.price} KM</span>
+                  <span className="price-tag">
+                    {item.price ? `${item.price} KM` : 'Po dogovoru'}
+                  </span>
                 </div>
 
                 <div className="card-content">
                   <div className="card-header">
-                    <span className="card-location">📍 {item.location}</span>
-                    <div className="card-rating">
-                      <StarRating rating={item.rating} />
-                    </div>
+                    <span className="card-location">📍 {item.location_name}</span>
+                    {item.category && <span className="card-category">🏷️ {item.category}</span>}
                   </div>
 
                   <h3 className="card-title">{item.title}</h3>

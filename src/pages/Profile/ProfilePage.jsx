@@ -20,64 +20,77 @@ const getInitials = (name) => {
 const ProfilePage = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [activeTab, setActiveTab] = useState('products');
   const [userProducts, setUserProducts] = useState([]);
+  const [userTourism, setUserTourism] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [itemType, setItemType] = useState('product'); // 'product' ili 'tourism'
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
       const userData = JSON.parse(savedUser);
       setUser(userData);
-      fetchUserProducts(userData.id);
+      fetchUserData(userData.id);
     } else {
       navigate('/');
     }
   }, []);
 
-  const fetchUserProducts = async (userId) => {
+  const fetchUserData = async (userId) => {
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL}/products/user/${userId}`);
-      const data = await response.json();
-      if (data.success) {
-        setUserProducts(data.data);
-      }
+      const [prodRes, tourRes] = await Promise.all([
+        fetch(`${API_URL}/products/user/${userId}`),
+        fetch(`${API_URL}/tourism/user/${userId}`)
+      ]);
+      
+      const prodData = await prodRes.json();
+      const tourData = await tourRes.json();
+
+      if (prodData.success) setUserProducts(prodData.data);
+      if (tourData.success) setUserTourism(tourData.data);
     } catch (error) {
-      console.error("Greška pri učitavanju proizvoda korisnika:", error);
+      console.error("Greška pri učitavanju podataka korisnika:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleProductAdded = () => {
+  const handleDataUpdated = () => {
     if (user) {
-      fetchUserProducts(user.id);
+      fetchUserData(user.id);
     }
-    setSelectedProduct(null);
+    setSelectedItem(null);
   };
 
-  const handleEdit = (product) => {
-    setSelectedProduct(product);
+  const handleEdit = (item, type) => {
+    setSelectedItem(item);
+    setItemType(type);
     setIsModalOpen(true);
   };
 
-  const handleDelete = (product) => {
-    setSelectedProduct(product);
+  const handleDeleteClick = (item, type) => {
+    setSelectedItem(item);
+    setItemType(type);
     setIsDeleteModalOpen(true);
   };
 
   const handleConfirmDelete = async () => {
     const token = localStorage.getItem('token');
+    const endpoint = itemType === 'product' ? 'products' : 'tourism';
+    
     try {
-      const response = await fetch(`${API_URL}/products/${selectedProduct.id}`, {
+      const response = await fetch(`${API_URL}/${endpoint}/${selectedItem.id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
+      
       if (response.status === 401 || response.status === 403) {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
@@ -87,7 +100,7 @@ const ProfilePage = () => {
 
       const data = await response.json();
       if (data.success) {
-        fetchUserProducts(user.id);
+        fetchUserData(user.id);
         setIsDeleteModalOpen(false);
       }
     } catch (error) {
@@ -113,32 +126,82 @@ const ProfilePage = () => {
               </div>
             </div>
             
-            <button className="add-product-btn" onClick={() => setIsModalOpen(true)}>
-              <span className="plus-icon">+</span> Dodaj novi proizvod
+            <button className="add-product-btn" onClick={() => {
+              setSelectedItem(null);
+              setIsModalOpen(true);
+            }}>
+              <span className="plus-icon">+</span> Dodaj objavu
             </button>
           </div>
 
-          <div className="profile-products-section">
-            <div className="section-header">
-              <h2>Moji Proizvodi</h2>
-              <span className="product-count">{userProducts.length} proizvoda</span>
+          <div className="profile-tabs-container">
+            <div className="profile-tabs">
+              <button 
+                className={`profile-tab ${activeTab === 'products' ? 'active' : ''}`}
+                onClick={() => setActiveTab('products')}
+              >
+                Moji Proizvodi <span>({userProducts.length})</span>
+              </button>
+              <button 
+                className={`profile-tab ${activeTab === 'tourism' ? 'active' : ''}`}
+                onClick={() => setActiveTab('tourism')}
+              >
+                Seoski Turizam <span>({userTourism.length})</span>
+              </button>
             </div>
+          </div>
 
+          <div className="profile-sections-content">
             {loading ? (
-              <div className="loading-spinner">Učitavanje tvojih proizvoda...</div>
-            ) : userProducts.length > 0 ? (
-              <ProductsList 
-                products={userProducts} 
-                onEdit={handleEdit} 
-                onDelete={handleDelete} 
-              />
+              <div className="loading-spinner">Učitavanje podataka...</div>
+            ) : activeTab === 'products' ? (
+              <div className="profile-products-section">
+                {userProducts.length > 0 ? (
+                  <ProductsList 
+                    products={userProducts} 
+                    onEdit={(p) => handleEdit(p, 'product')} 
+                    onDelete={(p) => handleDeleteClick(p, 'product')} 
+                  />
+                ) : (
+                  <div className="empty-profile-state">
+                    <p>Još uvek niste dodali nijedan proizvod.</p>
+                    <button className="create-first-btn" onClick={() => {
+                      setSelectedItem(null);
+                      setIsModalOpen(true);
+                    }}>Dodaj prvi proizvod</button>
+                  </div>
+                )}
+              </div>
             ) : (
-              <div className="empty-products">
-                <p>Još uvek niste dodali nijedan proizvod.</p>
-                <button className="create-first-btn" onClick={() => {
-                  setSelectedProduct(null);
-                  setIsModalOpen(true);
-                }}>Započni prodaju</button>
+              <div className="profile-tourism-section">
+                {userTourism.length > 0 ? (
+                  <div className="profile-tourism-grid">
+                    {userTourism.map(item => (
+                      <div key={item.id} className="profile-item-card">
+                        <div className="item-img">
+                          <img src={item.image || '/placeholder.png'} alt={item.title} />
+                        </div>
+                        <div className="item-info">
+                          <h3>{item.title}</h3>
+                          <p className="item-meta">🏷️ {item.category || 'Nema kategorije'} | 📍 {item.location_name}</p>
+                          <p className="item-price">{item.price ? `${item.price} KM` : 'Po dogovoru'}</p>
+                        </div>
+                        <div className="item-actions">
+                          <button className="edit-btn" onClick={() => handleEdit(item, 'tourism')}>Izmjeni</button>
+                          <button className="delete-btn" onClick={() => handleDeleteClick(item, 'tourism')}>Obriši</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="empty-profile-state">
+                    <p>Još uvek niste dodali nijednu turističku ponudu.</p>
+                    <button className="create-first-btn" onClick={() => {
+                      setSelectedItem(null);
+                      setIsModalOpen(true);
+                    }}>Objavi turističku ponudu</button>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -148,17 +211,18 @@ const ProfilePage = () => {
           isOpen={isModalOpen} 
           onClose={() => {
             setIsModalOpen(false);
-            setSelectedProduct(null);
+            setSelectedItem(null);
           }} 
-          onProductAdded={handleProductAdded}
-          product={selectedProduct}
+          onProductAdded={handleDataUpdated}
+          product={itemType === 'product' ? selectedItem : null}
+          tourismItem={itemType === 'tourism' ? selectedItem : null}
         />
 
         <DeleteConfirmationModal 
           isOpen={isDeleteModalOpen}
           onClose={() => setIsDeleteModalOpen(false)}
           onConfirm={handleConfirmDelete}
-          productName={selectedProduct?.name}
+          productName={selectedItem?.name || selectedItem?.title}
         />
       </main>
 

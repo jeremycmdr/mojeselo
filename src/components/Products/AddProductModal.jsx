@@ -5,9 +5,11 @@ import API_URL from '../../config';
 import '../Auth/AuthModal.css'; // Ponovo koristimo iste stilove za konzistentnost
 import './AddProductModal.css';
 
-const AddProductModal = ({ isOpen, onClose, onProductAdded, product }) => {
+const AddProductModal = ({ isOpen, onClose, onProductAdded, product, tourismItem }) => {
   const [activeTab, setActiveTab] = useState('product');
   const [categories, setCategories] = useState([]);
+  const [tourismCategories, setTourismCategories] = useState([]);
+  const [locationOptions, setLocationOptions] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
     price: '',
@@ -21,27 +23,45 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded, product }) => {
     description: '',
     image: '',
     price: '',
-    location: ''
+    location_id: '',
+    category_id: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch(`${API_URL}/categories`);
-        const data = await response.json();
-        if (data.success) {
-          setCategories(data.data.map(cat => ({
+        const [catRes, tourCatRes, locRes] = await Promise.all([
+          fetch(`${API_URL}/categories`),
+          fetch(`${API_URL}/tourism-categories`),
+          fetch(`${API_URL}/locations`)
+        ]);
+
+        const catData = await catRes.json();
+        const tourCatData = await tourCatRes.json();
+        const locData = await locRes.json();
+
+        if (catData.success) {
+          setCategories(catData.data.map(cat => ({
             value: cat.id,
             label: cat.name
           })));
         }
+        if (tourCatData.success) {
+          setTourismCategories(tourCatData.data.map(cat => ({
+            value: cat.id,
+            label: cat.name
+          })));
+        }
+        if (locData.success) {
+          setLocationOptions(locData.data);
+        }
       } catch (error) {
-        console.error("Greška pri preuzimanju kategorija:", error);
+        console.error("Greška pri preuzimanju podataka:", error);
       }
     };
-    fetchCategories();
+    fetchData();
   }, []);
 
   // Reset/Populate form
@@ -63,12 +83,22 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded, product }) => {
           description: product.description || '',
           isOrganic: !!product.isOrganic
         });
+      } else if (tourismItem) {
+        setActiveTab('tourism');
+        setTourismData({
+          title: tourismItem.title || '',
+          description: tourismItem.description || '',
+          image: tourismItem.image || '',
+          price: tourismItem.price || '',
+          location_id: tourismItem.location_id || '',
+          category_id: tourismItem.category_id || ''
+        });
       } else {
         setFormData({ name: '', price: '', category: '', image: '', description: '', isOrganic: false });
-        setTourismData({ title: '', description: '', image: '', price: '', location: '' });
+        setTourismData({ title: '', description: '', image: '', price: '', location_id: '', category_id: '' });
       }
     }
-  }, [isOpen, product, categories]);
+  }, [isOpen, product, tourismItem, categories, tourismCategories, locationOptions]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -86,24 +116,29 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded, product }) => {
 
     const savedUser = JSON.parse(localStorage.getItem('user'));
     const token = localStorage.getItem('token');
-    
+
     try {
       const isProduct = activeTab === 'product';
+      const editingItem = isProduct ? product : tourismItem;
       const endpoint = isProduct ? 'products' : 'tourism';
-      
-      const url = product && isProduct
-        ? `${API_URL}/${endpoint}/${product.id}` 
-        : `${API_URL}/${endpoint}`;
-      
-      const method = product && isProduct ? 'PUT' : 'POST';
 
-      const body = isProduct 
+      const url = editingItem
+        ? `${API_URL}/${endpoint}/${editingItem.id}`
+        : `${API_URL}/${endpoint}`;
+
+      const method = editingItem ? 'PUT' : 'POST';
+
+      const body = isProduct
         ? { ...formData, user_id: savedUser.id }
-        : { ...tourismData, household_id: savedUser.id };
+        : { 
+            ...tourismData, 
+            household_id: savedUser.id,
+            price: tourismData.price === '' ? null : tourismData.price 
+          };
 
       const response = await fetch(url, {
         method,
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
@@ -137,16 +172,16 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded, product }) => {
     <div className="modal-overlay">
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <button className="close-modal" onClick={onClose}>&times;</button>
-        
+
         {/* TABS */}
         <div className="auth-tabs">
-          <button 
+          <button
             className={`tab-btn ${activeTab === 'product' ? 'active' : ''}`}
             onClick={() => setActiveTab('product')}
           >
             Dodaj Proizvod
           </button>
-          <button 
+          <button
             className={`tab-btn ${activeTab === 'tourism' ? 'active' : ''}`}
             onClick={() => setActiveTab('tourism')}
           >
@@ -161,7 +196,7 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded, product }) => {
                 <h2>{product ? 'Izmjeni proizvod' : 'Novi proizvod'}</h2>
                 <p>Unesite detalje vašeg domaćeg proizvoda</p>
                 {error && <div className="auth-error-alert">{error}</div>}
-                
+
                 <div className="form-group">
                   <label>Naziv proizvoda</label>
                   <input type="text" name="name" value={formData.name} onChange={handleInputChange} placeholder="npr. Domaći Ajvar 720g" required />
@@ -194,7 +229,7 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded, product }) => {
               </>
             ) : (
               <>
-                <h2>Novi oglas za turizam</h2>
+                <h2>{tourismItem ? 'Izmjeni oglas' : 'Novi oglas za turizam'}</h2>
                 <p>Ponudite smještaj ili iskustvo na vašem imanju</p>
                 {error && <div className="auth-error-alert">{error}</div>}
 
@@ -205,12 +240,26 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded, product }) => {
                 <div className="form-row">
                   <div className="form-group">
                     <label>Cijena noćenja (KM)</label>
-                    <input type="number" name="price" value={tourismData.price} onChange={handleInputChange} placeholder="0.00" step="0.01" required />
+                    <input type="number" name="price" value={tourismData.price} onChange={handleInputChange} placeholder="0.00" />
                   </div>
                   <div className="form-group">
-                    <label>Lokacija</label>
-                    <input type="text" name="location" value={tourismData.location} onChange={handleInputChange} placeholder="npr. Bjelašnica, Babin Do" required />
+                    <label>Kategorija</label>
+                    <CustomSelect
+                      options={tourismCategories}
+                      value={tourismData.category_id}
+                      onChange={(val) => setTourismData(prev => ({ ...prev, category_id: val }))}
+                      placeholder="Izaberi..."
+                    />
                   </div>
+                </div>
+                <div className="form-group">
+                  <label>Lokacija</label>
+                  <CustomSelect
+                    options={locationOptions}
+                    value={tourismData.location_id}
+                    onChange={(val) => setTourismData(prev => ({ ...prev, location_id: val }))}
+                    placeholder="Izaberi lokaciju..."
+                  />
                 </div>
                 <div className="form-group">
                   <label>Link do slike (URL)</label>
